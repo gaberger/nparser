@@ -1,0 +1,9 @@
+{
+  :deps {
+  	
+    org.clojure/tools.cli {:mvn/version "0.3.5"}
+    org.clojure/test.check {:mvn/version "0.10.0-alpha2"}
+    instaparse 			   {:mvn/version "1.4.8"}
+    org.clojure/tools.namespace {:mvn/version "0.2.11"}
+  }
+}
