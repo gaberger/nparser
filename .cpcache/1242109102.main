@@ -1,0 +1,1 @@
+-e (require,'[clojure.tools.nrepl.server,:refer,[start-server]]),(start-server,:port,5555)

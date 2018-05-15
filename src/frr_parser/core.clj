@@ -1,5 +1,9 @@
 (ns frr-parser.core
- (:require [instaparse.core :as insta :refer [defparser]]))
+ (:require [instaparse.core :as insta :refer [defparser]]
+           [clojure.pprint :as pprint :refer [pprint]]
+           [com.rpl.specter :refer :all]))
+
+            ; [net.cgrand.enlive-html :refer [select]]]
 
 (def test1
  "router bgp 65525
@@ -56,12 +60,19 @@
 
 
 (defparser frr-bgp
-  "ROUTERBGP = BGP
-   <BGP> = 'router bgp' <number> otherkeys bgp
+  "BGP = ROUTERBGP
+   <ROUTERBGP> = <'router bgp'> asn otherkeys routerid bgp
+   asn = number
    otherkeys = 'no synchronization'
    bgp =  (<'bgp'> bgpkeys)*
-   <bgpkeys> = <'router-id'> router-id | 'always-compare-med' | 'deterministic-med' | 'bestpath' token | 'bestpath as-path' token | 'confederation identifier' number | confederation-peers 
-   router-id = address
+   routerid = router-id 
+   <bgpkeys> = <'router-id'> router-id | always-compare-med | deterministic-med | best-path | best-path-as-path | confederation-identifier | confederation-peers 
+   <router-id> = (<'bgp router-id'> address)
+   always-compare-med = 'always-compare-med'
+   deterministic-med = 'deterministic-med' 
+   best-path = <'bestpath'> token
+   best-path-as-path = <'bestpath as-path'> token 
+   confederation-identifier = <'confederation identifier'> number 
    confederation-peers = <'confederation peers'> number+
    <sentence> = token (<whitespace> token)*
    whitespace = #'\\s+'
@@ -72,9 +83,27 @@
    <address> = #'\\d+\\.\\d+\\.\\d+\\.\\d+'
    <newline> = #'\\n' | #'\\r\\n'
    <number> = #'[0-9]+'"
- :output-format :enlive  
+ :output-format :hiccup  
  :string-ci true
  :auto-whitespace :standard)
 
+(defn bgp-transform [input]
+  (insta/transform 
+    {
+        :BGP        (fn b [& arg] 
+                     (let [general-opts (take 3 arg)
+                           bgp-args (nth arg 3)
+                           opts   (assoc {} :BGP (reduce conj {}  (into [] general-opts)))]
+                      (conj opts bgp-args))) 
+        :bgp        (fn c [& arg]
+                     (assoc {} :bgp (reduce conj {} (into [] arg))))
+        :confederation-peers (fn fn-confederation-peers 
+                              [& arg]
+                              (conj [] :confederation-peers (into [] (conj arg))))}
+   input))
 
-  
+
+(defn -main []
+  (bgp-transform (frr-bgp test1)))
+
+(-main)
