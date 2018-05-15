@@ -1,5 +1,5 @@
-## FRR Parser 
-This is an example of a FRR configuration parser written in Clojure and using the Instaparse library
+## Network Configuration Parser 
+This is an example of a Network Configuration Parser written in Clojure and using the Instaparse library
 
 ### Dependencies
 Install Clojure and command line tools ( see [Getting Started](https://clojure.org/guides/getting_started) )
@@ -27,7 +27,7 @@ router bgp 65525
 
 
 ```
-#> clj -m frr-parser.core
+#> clj -m ncp-parser.core
 {:BGP
  {:asn "65525",
   :otherkeys "no synchronization",

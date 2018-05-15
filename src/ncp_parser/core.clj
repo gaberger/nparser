@@ -1,9 +1,6 @@
-(ns frr-parser.core
+(ns ncp-parser.core
  (:require [instaparse.core :as insta :refer [defparser]]
-           [clojure.pprint :as pprint :refer [pprint]]
-           [com.rpl.specter :refer :all]))
-
-            ; [net.cgrand.enlive-html :refer [select]]]
+           [clojure.pprint :as pprint :refer [pprint]]))
 
 (def test1
  "router bgp 65525
