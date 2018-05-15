@@ -6,7 +6,7 @@ Install Clojure and command line tools ( see [Getting Started](https://clojure.o
 
 ## Run program
 
-clj -m frr-parser.core
+```clj -m ncp-parser.core```
 
 
 ## Sample Configuration
