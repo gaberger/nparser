@@ -104,6 +104,4 @@
 
 
 (defn -main []
-  (bgp-transform (frr-bgp test1)))
-
-(-main)
+  (pprint (bgp-transform (frr-bgp test1))))
