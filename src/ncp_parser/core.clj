@@ -55,6 +55,7 @@
 ;     neighbor 10.0.9.1 route-map rm-in in
 ;     neighbor 10.0.9.1 route-map rm-export-1 out)
 
+(declare frr-bgp)
 
 (defparser frr-bgp
   "BGP = ROUTERBGP
@@ -87,16 +88,21 @@
 (defn bgp-transform [input]
   (insta/transform 
     {
+        :asn        (fn asn [arg] 
+                        (let [asnval (clojure.edn/read-string arg)]
+                          {:asn asnval}))
         :BGP        (fn b [& arg] 
                      (let [general-opts (take 3 arg)
                            bgp-args (nth arg 3)
-                           opts   (assoc {} :BGP (reduce conj {}  (into [] general-opts)))]
+                          ;  opts   (assoc {} :BGP (reduce conj {}  (into [] general-opts)))
+                           opts   (reduce conj {}  (into [] general-opts))]
                       (conj opts bgp-args))) 
         :bgp        (fn c [& arg]
                      (assoc {} :bgp (reduce conj {} (into [] arg))))
         :confederation-peers (fn fn-confederation-peers 
                               [& arg]
-                              (conj [] :confederation-peers (into [] (conj arg))))}
+                              (conj [] :confederation-peers (into #{} (map #(clojure.edn/read-string %) arg))))}
+     
    input))
 
 
