@@ -111,8 +111,42 @@ router bgp 65525
 (s/def :unq/bgprouter  (s/keys :req-un [::bgprouter]))  
 ```
 
-## Sample Generator based on spec
+## Sample Generator based on spec (Obviously needs work)
 
 ```
+{:bgprouter
+  {:bgp-global
+   {:asn 1,
+    :otherkeys "no synchronization",
+    :router-id "0.46.253.166"},
+   :bgp-med
+   ["deterministic-med"
+    "deterministic-med"
+    "always-compare-med"
+    "deterministic-med"
+    "deterministic-med"
+    "deterministic-med"
+    "always-compare-med"
+    "always-compare-med"
+    "always-compare-med"
+    "always-compare-med"
+    "always-compare-med"
+    "deterministic-med"
+    "always-compare-med"],
+   :bgp-bestpath
+   ["compare-routerid"
+    "compare-routerid"
+    "compare-routerid"
+    "as-path confed"
+    "as-path confed"
+    "as-path confed"
+    "as-path confed"
+    "as-path confed"
+    "compare-routerid"
+    "as-path confed"
+    "compare-routerid"
+    "compare-routerid"],
+   :bgp-confederation
+   {:confederation-identifier 233, :confederation-peers #{60 64513}}}})
 
 ```
