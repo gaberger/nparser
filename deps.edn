@@ -4,7 +4,9 @@
          org.clojure/test.check {:mvn/version "0.10.0-alpha2"}
          instaparse          {:mvn/version "1.4.8"}
          org.clojure/tools.namespace {:mvn/version "0.2.11"}
-         org.clojure/spec.alpha {:mvn/version "0.1.143"}}
+         org.clojure/spec.alpha {:mvn/version "0.1.143"}
+         expound {:mvn/version "0.6.0"}
+         com.velisco/strgen {:mvn/version "0.1.7"}}
   
   :aliases {
             :1.8 {:override-deps {org.clojure/clojure {:mvn/version "1.8.0"}}}

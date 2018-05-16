@@ -1,6 +1,7 @@
 (ns ncp-parser.core
  (:require [instaparse.core :as insta :refer [defparser]]
-           [clojure.pprint :as pprint :refer [pprint]]))
+           [clojure.pprint :as pprint :refer [pprint]]
+           [clojure.string :as str]))
 
 (def test1
  "router bgp 65525
@@ -59,52 +60,64 @@
 
 (defparser frr-bgp
   "BGP = ROUTERBGP
-   <ROUTERBGP> = <'router bgp'> asn otherkeys routerid bgp
+   <ROUTERBGP> = <'router bgp'> asn otherkeys bgp bgp-bestpath bgp-confederation
    asn = number
    otherkeys = 'no synchronization'
-   bgp =  (<'bgp'> bgpkeys)*
-   routerid = router-id 
-   <bgpkeys> = <'router-id'> router-id | always-compare-med | deterministic-med | best-path | best-path-as-path | confederation-identifier | confederation-peers 
-   <router-id> = (<'bgp router-id'> address)
-   always-compare-med = 'always-compare-med'
-   deterministic-med = 'deterministic-med' 
-   best-path = <'bestpath'> token
-   best-path-as-path = <'bestpath as-path'> token 
-   confederation-identifier = <'confederation identifier'> number 
-   confederation-peers = <'confederation peers'> number+
-   <sentence> = token (<whitespace> token)*
-   whitespace = #'\\s+'
-   symbol = #'[.]'
-   <numchar> = number word | word number
-   <token> = word | numchar
-   <word> = #'[a-zA-Z()-\\.,]+'
+   
+   bgp = (<'bgp'> bgpkeys)*
+           
+   <bgpkeys> = (router-id | 'always-compare-med' | 'deterministic-med')
+   router-id = (<'router-id'> address)
+           
+   bgp-bestpath = &'bgp bestpath' (<'bgp bestpath'> best-path)*
+   <best-path> = ('as-path confed' | 'as-path multipath-relax' | 'compare-routerid') 
+           
+   bgp-confederation = &'bgp confederation' (<'bgp confederation'> confederation)*
+   <confederation> = (confederation-identifier | confederation-peers)
+   confederation-identifier =  <'identifier'> number+       
+   confederation-peers = <'peers'> number+
+
    <address> = #'\\d+\\.\\d+\\.\\d+\\.\\d+'
-   <newline> = #'\\n' | #'\\r\\n'
    <number> = #'[0-9]+'"
  :output-format :hiccup  
  :string-ci true
  :auto-whitespace :standard)
 
+(defn parse-bp [arg]
+  (println "Count " (count arg))
+  (println "Type " (type arg))
+  (pprint arg)
+  arg)
+
 (defn bgp-transform [input]
   (insta/transform 
     {
-        :asn        (fn asn [arg] 
-                        (let [asnval (clojure.edn/read-string arg)]
-                          {:asn asnval}))
-        :BGP        (fn b [& arg] 
-                     (let [general-opts (take 3 arg)
-                           bgp-args (nth arg 3)
-                          ;  opts   (assoc {} :BGP (reduce conj {}  (into [] general-opts)))
-                           opts   (reduce conj {}  (into [] general-opts))]
-                      (conj opts bgp-args))) 
-        :bgp        (fn c [& arg]
-                     (assoc {} :bgp (reduce conj {} (into [] arg))))
-        :confederation-peers (fn fn-confederation-peers 
-                              [& arg]
-                              (conj [] :confederation-peers (into #{} (map #(clojure.edn/read-string %) arg))))}
+        ; :best-path  (fn best-path [arg]
+        ;               {:best-path (str/split arg #" ")})            
+        ; :asn        (fn asn [arg] 
+        ;                 (let [asnval (clojure.edn/read-string arg)]
+        ;                   {:asn asnval}))
+        ; :BGP        (fn b [& arg] 
+        ;              (let [general-opts (take 2 arg)
+        ;                    bgp-args (nth arg 3)
+        ;                    opts   (reduce conj {}  (into [] general-opts))]
+        ;               (conj opts bgp-args)))
+        :BGP                (fn BGP [& arg] (parse-bp arg))}
+          
+        ; :bgp                (fn c [& arg]
+        ;                         (assoc {} :bgp (reduce conj {} (into [] arg))))
+        ; :bgp-bestpath        (fn c [& arg]
+        ;                         (assoc {} :bgp-bestpath (into [] arg)))
+        ; :bgp-confederation   (fn c [& arg]
+        ;                         (assoc {} :bgp-confederation (into [] arg)))
+        ; :confederation-peers (fn fn-confederation-peers 
+        ;                       [& arg]
+        ;                       (conj [] :confederation-peers (into #{} (map #(clojure.edn/read-string %) arg))))}
      
    input))
 
+(defn -transform []
+  (pprint (bgp-transform (frr-bgp test1))))
 
 (defn -main []
-  (pprint (bgp-transform (frr-bgp test1))))
+  (pprint (frr-bgp test1)))

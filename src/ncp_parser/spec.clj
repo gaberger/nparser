@@ -1,6 +1,8 @@
 (ns ncp-parser.spec
     (:require [clojure.spec.alpha :as s]
-              [clojure.spec.gen.alpha :as gen]))        
+              ; [clojure.spec.gen.alpha :as gen]))  
+              [miner.strgen :as sg]
+              [clojure.test.check.generators :as gen]))      
         
 
 (def model
@@ -27,8 +29,8 @@
 (s/def ::cpu int?)
 (s/def ::ram int?)
 (s/def ::disks int?)
-(s/def ::valid-lower-asn (s/and integer? #(>= % 1) #(<= % 64495)))
-(s/def ::valid-higher-asn (s/and integer? #(>= % 64512) #(< % 65535)))
+(s/def ::valid-lower-asn  (s/int-in 1 64495))
+(s/def ::valid-higher-asn (s/int-in 64512 65535))
 (s/def ::valid-asn (s/or :public  ::valid-lower-asn
                          :private ::valid-higher-asn))
        
@@ -40,16 +42,17 @@
 
 
 (def ip-regex #"^(([01]?\d\d?|2[0-4]\d|25[0-5])\.){3}([01]?\d\d?|2[0-4]\d|25[0-5])$")
-(s/def ::ip-address-type (s/and string? #(re-matches ip-regex %)))
+(s/def ::ip-address-type  (s/spec (s/and string? #(re-matches ip-regex %))
+                              :gen #(sg/string-generator ip-regex)))                                
 (s/def ::asn ::valid-asn)
-(s/def ::routerid (s/and string? ::ip-address-type))
+(s/def ::routerid ::ip-address-type)
 (s/def ::otherkeys string?)   
 (s/def ::always-compare-med string?) 
 (s/def ::deterministic-med string?)
-(s/def ::best-path1 string?)
+(s/def ::best-path #{"confed" "multipath-relax" "compare-routerid"})
 (s/def ::best-path-as-path string?)
 (s/def ::confederation-identifier string?)
-(s/def ::confederation-peers (s/coll-of ::valid-asn :kind set? :distinct true))
+(s/def ::confederation-peers (s/coll-of ::valid-asn :kind set?))
 
 (s/def :unq/bgp 
   (s/keys :req-un [::always-compare-med ::deterministic-med ::best-path ::best-path-as-path ::confederation-identifier ::confederation-peers]))     
@@ -71,3 +74,5 @@
 
 
 ; (s/conform ::config {::nested-data {:port "12345"}})
+
+
