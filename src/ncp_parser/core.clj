@@ -69,9 +69,6 @@
            
    <bgp> = 'always-compare-med' | 'deterministic-med'
            
-   always-compare-med = 'always-compare-med' 
-   deterministic-med = 'deterministic-med'        
- 
    router-id = (<'bgp router-id'> address)
            
    bgp-bestpath = &'bgp bestpath' (<'bgp bestpath'> best-path)*
