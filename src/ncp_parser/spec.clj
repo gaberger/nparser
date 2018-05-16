@@ -2,20 +2,20 @@
     (:require [clojure.spec.alpha :as s]
               ; [clojure.spec.gen.alpha :as gen]))  
               [miner.strgen :as sg]
-              [clojure.test.check.generators :as gen]))      
+              [clojure.test.check.generators :as gen])      
         
 
 (def model
-  { :asn 65525
-    :otherkeys "no synchronization",
-    :routerid "192.0.0.1",
-    :bgp
-    {:always-compare-med "always-compare-med",
-      :deterministic-med "deterministic-med",
-      :best-path "compare-routerid",
-      :best-path-as-path "confed",
-      :confederation-identifier "100",
-      :confederation-peers #{65522 65528 65527 65530}}})
+  [:bgprouter
+    {:bgp-global
+      {:asn 65525,
+      :otherkeys "no synchronization",
+      :router-id "192.0.0.1"}}
+    {:bgp ["always-compare-med" "deterministic-med"]}
+    {:bgp-bestpath ["compare-routerid" "as-path confed"]}
+    {:bgp-confederation
+      {:confederation-identifier "100",
+      :confederation-peers #{65529 65528 65527 65530}}}])
 
 
               
