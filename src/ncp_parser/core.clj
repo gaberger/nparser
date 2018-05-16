@@ -59,17 +59,15 @@
 (declare frr-bgp)
 
 (defparser frr-bgp
-  "bgprouter = bgp-global bgp bgp-bestpath bgp-confederation
+  "bgprouter = bgp-global bgp-med bgp-bestpath bgp-confederation
   
    bgp-global =  (otherkeys | asn | router-id)*
    asn =  <'router bgp'> number
    otherkeys = 'no synchronization'
    
-   bgp = (<'bgp'> bgp-options)*
+   bgp-med = (<'bgp'> bgp)*
            
-   <bgpkeys> = (router-id | bgp-options)
-           
-   <bgp-options> = 'always-compare-med' | 'deterministic-med'
+   <bgp> = 'always-compare-med' | 'deterministic-med'
            
    always-compare-med = 'always-compare-med' 
    deterministic-med = 'deterministic-med'        
@@ -91,42 +89,29 @@
  :auto-whitespace :standard)
 
 (defn parse-bp [arg]
-  (println "Count " (count arg))
-  (println "Type " (type arg))
-  (pprint arg)
-  arg)
+  (assoc {} :bgprouter (reduce conj {} arg)))
 
 (defn bgp-transform [input]
   (insta/transform 
     {
-        :asn        (fn asn [arg] 
-                        (let [asnval (clojure.edn/read-string arg)]
-                          {:asn asnval}))
-        :bgp-global         (fn c [& arg]
-                                (assoc {} :bgp-global (reduce conj {} arg)))
-        :bgp                 (fn c [& arg]
-                                (assoc {} :bgp (into [] arg)))
-        :bgp-bestpath        (fn c [& arg]
-                                (assoc {} :bgp-bestpath (into [] arg)))
-        :bgp-confederation   (fn c [& arg]
-                                (assoc {} :bgp-confederation (reduce conj {} arg)))
-        :confederation-peers (fn fn-confederation-peers 
-                              [& arg]
-                              (conj [] :confederation-peers (into #{} (map #(clojure.edn/read-string %) arg))))}
-     
+        :bgprouter                 (fn bgprouter [& arg]
+                                     (assoc {} :bgprouter (reduce conj {} arg)))
+        :asn                       (fn asn [arg] 
+                                      (let [asnval (clojure.edn/read-string arg)]
+                                       {:asn asnval}))
+        :bgp-global                (fn c [& arg]
+                                     (assoc {} :bgp-global (reduce conj {} arg)))
+        :bgp-med                   (fn c [& arg]
+                                     (assoc {} :bgp-med (into [] arg)))
+        :bgp-bestpath               (fn c [& arg]
+                                     (assoc {} :bgp-bestpath (into [] arg)))
+        :bgp-confederation          (fn c [& arg]
+                                      (assoc {} :bgp-confederation (reduce conj {} arg)))
+        :confederation-peers        (fn cp [& arg]
+                                      (conj [] :confederation-peers (into #{} (map #(clojure.edn/read-string %) arg))))
+        :confederation-identifier   (fn ci [arg] 
+                                       {:confederation-identifier  (clojure.edn/read-string arg)})}     
    input))
 
-(defn -transform []
-  (pprint (bgp-transform (frr-bgp test1))))
-
 (defn -main []
-  (pprint (frr-bgp test1)))
-
-
-[[:router-id "192.0.0.1"]
- [:bgp-options "always-compare-med"]
- [:bgp-options "deterministic-med"]]
-[
-  [:router-id "192.0.0.1"]
-  [:always "always-compare-med"]
-  [:deter "deterministic-med"]]
+  (pprint (bgp-transform (frr-bgp test1))))
