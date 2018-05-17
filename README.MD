@@ -32,7 +32,7 @@ router bgp 65525
 
 Create a parser based on grammar stored at `resources/parsers`
 
-```(create-parser "frr")``
+```(create-parser "frr")```
 
 ```Then you can use the parser against configurations such as:```
 
