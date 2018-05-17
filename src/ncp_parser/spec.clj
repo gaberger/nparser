@@ -32,7 +32,7 @@
 (s/def ::bgp-global (s/keys :req-un [::asn ::otherkeys ::router-id]))
    
 
-(s/def ::bgprouter (s/keys :req-un [::bgp-global
+(s/def ::bgprouter (s/keys :req-un [   ::bgp-global
                                        ::bgp-med
                                        ::bgp-bestpath
                                        ::bgp-confederation]))

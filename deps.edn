@@ -1,21 +1,21 @@
 {
   :deps {
          org.clojure/tools.cli {:mvn/version "0.3.5"}
-         org.clojure/test.check {:mvn/version "0.10.0-alpha2"}
          instaparse          {:mvn/version "1.4.8"}
          org.clojure/tools.namespace {:mvn/version "0.2.11"}
          org.clojure/spec.alpha {:mvn/version "0.1.143"}
          expound {:mvn/version "0.6.0"}
          com.velisco/strgen {:mvn/version "0.1.7"}}
-  
+
   :aliases {
             :1.8 {:override-deps {org.clojure/clojure {:mvn/version "1.8.0"}}}
             :1.9 {:override-deps {org.clojure/clojure {:mvn/version "1.9.0"}}}
             :master {:override-deps {org.clojure/clojure {:mvn/version "1.10.0-master-SNAPSHOT"}}}
-            :test {:extra-paths ["test"]}
+            :test {:extra-paths ["test" "resources"] 
+                   :extra-deps {org.clojure/test.check {:mvn/version "0.10.0-alpha2"}
+                                eftest {:mvn/version "0.5.2"}}}
             :bench {:extra-deps {criterium {:mvn/version "0.4.4"}}}
             :proto {:extra-deps {proto-repl {:mvn/version "RELEASE"}}}
             :socket {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
             :nrepl {:extra-deps {org.clojure/tools.nrepl {:mvn/version "0.2.12"}}
                     :main-opts ["-e" "(require,'[clojure.tools.nrepl.server,:refer,[start-server]]),(start-server,:port,5555)"]}}}
-  

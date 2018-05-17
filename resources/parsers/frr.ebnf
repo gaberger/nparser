@@ -1,0 +1,24 @@
+(*This is the EBNF Grammar for FRR router*)
+
+bgprouter = bgp-global bgp-med bgp-bestpath bgp-confederation
+
+bgp-global =  (otherkeys | asn | router-id)*
+asn =  <'router bgp'> number
+otherkeys = 'no synchronization'
+
+bgp-med = (<'bgp'> bgp)*
+
+<bgp> = 'always-compare-med' | 'deterministic-med'
+
+router-id = (<'bgp router-id'> address)
+
+bgp-bestpath = &'bgp bestpath' (<'bgp bestpath'> best-path)*
+<best-path> = ('as-path confed' | 'as-path multipath-relax' | 'compare-routerid')
+
+bgp-confederation = &'bgp confederation' (<'bgp confederation'> confederation)*
+<confederation> = (confederation-identifier | confederation-peers)
+confederation-identifier =  <'identifier'> number+
+confederation-peers = <'peers'> number+
+
+<address> = #"\d+\.\d+\.\d+\.\d+"
+<number> = #"[0-9]+"
