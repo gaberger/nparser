@@ -1,15 +1,21 @@
-## Network Configuration Parser 
+## Network Configuration Parser
 This is an example of a Network Configuration Parser written in Clojure and using the Instaparse library
 
 ### Dependencies
 Install Clojure and command line tools ( see [Getting Started](https://clojure.org/guides/getting_started) )
 
 ## Run program
+```
+At the moment this is running tests from ncp-parser.core-test for validation soon I will
+add commmand line arguments to process configurations and a service endpoint
+```
 
-```clj -m ncp-parser.core```
+
+`clj -m ncp-parser.core`
 
 
 ## Sample Configuration
+
 ```
 router bgp 65525
     no synchronization
@@ -24,39 +30,45 @@ router bgp 65525
 
 ## EBNF Parser Function
 
+Create a parser based on grammar stored at `resources/parsers`
+
+```(create-parser "frr")``
+
+```Then you can use the parser against configurations such as:```
+
+```(frr (slurp (io/resource "configs/router1.cfg")))```
+
+#### Example grammar
+
 ```
-(defparser frr-bgp
-  "bgprouter = bgp-global bgp-med bgp-bestpath bgp-confederation
-  
-   bgp-global =  (otherkeys | asn | router-id)*
-   asn =  <'router bgp'> number
-   otherkeys = 'no synchronization'
-   
-   bgp-med = (<'bgp'> bgp)*
-           
-   <bgp> = 'always-compare-med' | 'deterministic-med'
-           
-   router-id = (<'bgp router-id'> address)
-           
-   bgp-bestpath = &'bgp bestpath' (<'bgp bestpath'> best-path)*
-   <best-path> = ('as-path confed' | 'as-path multipath-relax' | 'compare-routerid') 
-           
-   bgp-confederation = &'bgp confederation' (<'bgp confederation'> confederation)*
-   <confederation> = (confederation-identifier | confederation-peers)
-   confederation-identifier =  <'identifier'> number+       
-   confederation-peers = <'peers'> number+
+(*This is the EBNF Grammar for FRR router*)
 
-   <address> = #'\\d+\\.\\d+\\.\\d+\\.\\d+'
-   <number> = #'[0-9]+'"
- :output-format :hiccup  
- :string-ci true
- :auto-whitespace :standard)
+bgprouter = bgp-global bgp-med bgp-bestpath bgp-confederation
 
- ```
+bgp-global =  (otherkeys | asn | router-id)*
+asn =  <'router bgp'> number
+otherkeys = 'no synchronization'
 
+bgp-med = (<'bgp'> bgp)*
 
+<bgp> = 'always-compare-med' | 'deterministic-med'
 
-## Sample Output
+router-id = (<'bgp router-id'> address)
+
+bgp-bestpath = &'bgp bestpath' (<'bgp bestpath'> best-path)*
+<best-path> = ('as-path confed' | 'as-path multipath-relax' | 'compare-routerid')
+
+bgp-confederation = &'bgp confederation' (<'bgp confederation'> confederation)*
+<confederation> = (confederation-identifier | confederation-peers)
+confederation-identifier =  <'identifier'> number+
+confederation-peers = <'peers'> number+
+
+<address> = #"\d+\.\d+\.\d+\.\d+"
+<number> = #"[0-9]+"
+
+```
+
+<!-- ## Sample Output
 
 ```
 #> clj -m ncp-parser.core
@@ -70,10 +82,12 @@ router bgp 65525
   :bgp-confederation
   {:confederation-identifier 100,
    :confederation-peers #{65529 65528 65527 65530}}}}
-```
+``` -->
 
 
-## Clojure SPEC Validator (TODO Refine specs around comands)
+## Clojure SPEC Validator
+
+#### (TODO Refine specs around commands)
 ```
 ; Specs
 (s/def ::valid-lower-asn  (s/int-in 1 64495))
@@ -98,7 +112,7 @@ router bgp 65525
 (s/def ::bgp-bestpath (s/coll-of ::bgp-bestpath-types))
 (s/def ::bgp-med (s/coll-of ::bgp-med-types))
 (s/def ::bgp-global (s/keys :req-un [::asn ::otherkeys ::router-id]))
-   
+
 
 (s/def ::bgprouter (s/keys :req-un [::bgp-global
                                        ::bgp-med
