@@ -3,6 +3,7 @@
             [clojure.java.io :as io]
             [clojure.spec.alpha :as s]
             [ncp-parser.core :refer :all]
+            [ncp-parser.spec :refer :all]
             [instaparse.core :as insta :refer [defparser]]))
 
 
@@ -21,6 +22,5 @@
     (is (true?
                (let [configuration (slurp (io/resource "configs/router1.cfg"))
                      _  (create-parser "frr")
-                     transform-map (bgp-transform (frr configuration))
-                     _ (print (s/valid? :unq/bgprouter transform-map))]
+                     transform-map (bgp-transform (frr configuration))]
                   (s/valid? :unq/bgprouter transform-map))))))
