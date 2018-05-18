@@ -6,6 +6,17 @@
            [clojure.spec.alpha :as s]
            [eftest.runner :refer [find-tests run-tests]]))
 
+(def whitespace
+    (insta/parser
+      "whitespace = #'\\s+'"))
+
+(def whitespace-or-comments
+    (insta/parser
+      "ws-or-comment = #'\\s+' | comment
+	     comment = '!'"
+     :auto-whitespace whitespace))
+
+
 (defmacro create-parser [device]
     (let [grammar-file (str/join "." [device "ebnf"])
           grammar (slurp (io/resource (str/join "/" ["parsers" grammar-file])))]
@@ -13,7 +24,8 @@
          ~grammar
         :output-format :hiccup
         :string-ci true
-        :auto-whitespace :standard)))
+        :auto-whitespace whitespace-or-comments)))
+
 
 
 (defn bgp-transform [input]
@@ -37,6 +49,3 @@
         :confederation-identifier   (fn ci [arg]
                                        {:confederation-identifier  (clojure.edn/read-string arg)})}
    input))
-
-(defn -main []
-  (run-tests (find-tests "test")))
