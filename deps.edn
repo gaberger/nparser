@@ -7,6 +7,7 @@
          expound {:mvn/version "0.6.0"}
          com.velisco/strgen {:mvn/version "0.1.7"}
          org.clojure/test.check {:mvn/version "0.10.0-alpha2"}
+         com.rpl/specter {:mvn/version "1.1.1"}
          eftest {:mvn/version "0.5.2"}}
   :paths ["src" "test" "resources"]
 

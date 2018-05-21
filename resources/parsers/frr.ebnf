@@ -10,14 +10,14 @@ hostname = 'hostname' word
 (* interface section *)
 
 interface-list = interface*
-<interface> = interface-name ip-address
+interface = (interface-name ip-address)*
 
 interface-name = <'interface'> word
 ip-address = <'ip address'> cidr
 
 
 (* router section *)
-router = bgp-global bgp-med bgp-bestpath bgp-confederation neighbor
+router = bgp-global bgp-med bgp-bestpath bgp-confederation neighbor-list
 
 bgp-global =  (otherkeys | asn | router-id)*
 asn =  &'router bgp' <'router bgp'> number
@@ -37,8 +37,9 @@ bgp-confederation = &'bgp confederation' (<'bgp confederation'> confederation)*
 confederation-identifier =  <'identifier'> number+
 confederation-peers = <'peers'> number+
 
-neighbor = (<'neighbor'> neighbor-list)*
-neighbor-list = (address (remote-as | neighbor-options | send-community | advertisement-interval | neighbor-route-map))*
+neighbor-list = (<'neighbor'> neighbor)*
+neighbor = (address (remote-as | neighbor-options | send-community | advertisement-interval | neighbor-route-map))*
+
 remote-as = <'remote-as'> number
 neighbor-options = next-hop-self
 send-community = <'send-community'> send-community-options
@@ -49,7 +50,7 @@ send-community-options = send-community-both
 send-community-both = 'both'
 
 neighbor-route-map = <'route-map'> rm direction
-rm = word
+<rm> = word
 direction = 'in' | 'out'
 
 (* ip prefix list *)
