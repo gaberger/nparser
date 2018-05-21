@@ -4,7 +4,7 @@
 device = hostname interface-list router ip-prefix-list ip-community-list ip-as-path-list route-map-list
 (* ip-prefix-list ip-community-list *)
 
-hostname = 'hostname' word
+hostname = <'hostname'> word
 
 
 (* interface section *)
@@ -37,21 +37,50 @@ bgp-confederation = &'bgp confederation' (<'bgp confederation'> confederation)*
 confederation-identifier =  <'identifier'> number+
 confederation-peers = <'peers'> number+
 
-neighbor-list = (<'neighbor'> neighbor)*
-neighbor = (address (remote-as | neighbor-options | send-community | advertisement-interval | neighbor-route-map))*
+
+(*
+
+neighbor 10.0.18.2 remote-as 200
+  neighbor 10.0.19.2 remote-as 300
+  neighbor 10.0.15.1 remote-as 65527
+  neighbor 10.0.15.1 next-hop-self
+  neighbor 10.0.15.1 send-community both
+
+[:neighbor-list
+   [:neighbor "10.0.18.2" [:remote-as "200"]]
+
+
+interface-list = interface*
+interface = (interface-name ip-address)*
+
+interface-name = <'interface'> word
+ip-address = <'ip address'> cidr
+
+[:interface
+   [:interface-name "eth1"]
+   [:ip-address "10.0.19.1" "/" "24"]]
+*)
+
+neighbor-list = (neighbor-term neighbor)*
+neighbor =  neighbor-address (remote-as | neighbor-options | send-community | advertisement-interval | neighbor-route-map)*
 
 remote-as = <'remote-as'> number
-neighbor-options = next-hop-self
-send-community = <'send-community'> send-community-options
+neighbor-options = next-hop-self | update-source
+<send-community> = <'send-community'> send-community-options
+neighbor-address = address
+<neighbor-term> = <'neighbor'>
 
 advertisement-interval = <'advertisement-interval'> number
-next-hop-self = <'next-hop-self'>
+<next-hop-self> = 'next-hop-self' ?['all']
+<update-source> = 'update-source' (if-name | address)
+if-name = word
 send-community-options = send-community-both
-send-community-both = 'both'
+<send-community-both> = 'both'
 
-neighbor-route-map = <'route-map'> rm direction
-<rm> = word
+neighbor-route-map = route-map direction
+route-map = <'route-map'> rm
 direction = 'in' | 'out'
+<rm> = word
 
 (* ip prefix list *)
 (* TODO more work here *)
@@ -60,14 +89,17 @@ ip-prefix-record = prefix-list-name prefix-perm ip-prefix ?[range]
 prefix-list-name = word
 ip-prefix = prefix
 prefix-perm = permit | deny
-range = (le  | gt) number
-le = 'le'
-gt = 'gt'
+<range> = (le  | gt)
+le = <'le'> number
+gt = <'gt'> number
 
 (* ip community list *)
-ip-community-list = (<'ip community-list'> ip-community-list-record)*
-ip-community-list-record = (standard | 'expanded')
-standard = <'standard'> community-list-name community-perm (community)+
+ip-community-list = (<'ip community-list'> ip-community-options)*
+<ip-community-options> = ip-community-list-standard | ip-community-list-expanded
+
+ip-community-list-standard = <'standard'> community-list-name community-perm community+
+ip-community-list-expanded = <'expanded'> community-list-name community-perm community+
+
 community-perm = permit | deny
 community-list-name = word
 community = number #":" number
@@ -134,7 +166,9 @@ set-weight = <'set weight'> number
 set-metric = <'set metric'> number
 (* ? *)
 set-as-path-prepend = <'set as-path prepend'> number
-set-community = <'set community'> community ?['additive']
+<set-community> = <'set community'> community ?[set-community-option]
+set-community-option = additive
+additive = <'additive'>
 (* set ipv6 next-hop local IPV6_ADDRESS *)
 
 
