@@ -247,40 +247,298 @@ community = community-type
 
 ## Sample Generator based on spec (Obviously needs work)
 
-```
-{:bgprouter
+~~~
+{:device
+ {:hostname "J",
+  :interface-list
+  [{:interface-name "eth0", :ip-cidr "10.0.18.1/24"}
+   {:interface-name "eth1", :ip-cidr "10.0.19.1/24"}
+   {:interface-name "eth2", :ip-cidr "10.0.15.2/24"}
+   {:interface-name "eth3", :ip-cidr "10.0.13.2/24"}
+   {:interface-name "eth4", :ip-cidr "10.0.11.2/24"}
+   {:interface-name "eth5", :ip-cidr "10.0.9.2/24"}],
+  :router
   {:bgp-global
-   {:asn 1,
+   {:asn 65525,
     :otherkeys "no synchronization",
-    :router-id "0.46.253.166"},
-   :bgp-med
-   ["deterministic-med"
-    "deterministic-med"
-    "always-compare-med"
-    "deterministic-med"
-    "deterministic-med"
-    "deterministic-med"
-    "always-compare-med"
-    "always-compare-med"
-    "always-compare-med"
-    "always-compare-med"
-    "always-compare-med"
-    "deterministic-med"
-    "always-compare-med"],
-   :bgp-bestpath
-   ["compare-routerid"
-    "compare-routerid"
-    "compare-routerid"
-    "as-path confed"
-    "as-path confed"
-    "as-path confed"
-    "as-path confed"
-    "as-path confed"
-    "compare-routerid"
-    "as-path confed"
-    "compare-routerid"
-    "compare-routerid"],
+    :router-id "192.0.0.1"},
+   :bgp-med ["always-compare-med" "deterministic-med"],
+   :bgp-bestpath ["compare-routerid" "as-path confed"],
    :bgp-confederation
-   {:confederation-identifier 233, :confederation-peers #{60 64513}}}})
-
-```
+   {:confederation-identifier 100,
+    :confederation-peers #{65529 65528 65527 65530}},
+   :neighbor-list
+   [{:neighbor {:neighbor-address "10.0.18.2", :remote-as 200}}
+    {:neighbor {:neighbor-address "10.0.19.2", :remote-as 300}}
+    {:neighbor {:neighbor-address "10.0.15.1", :remote-as 65527}}
+    {:neighbor
+     {:neighbor-address "10.0.15.1",
+      :neighbor-options "next-hop-self"}}
+    {:neighbor
+     {:neighbor-address "10.0.15.1", :send-community-options "both"}}
+    {:neighbor
+     {:neighbor-address "10.0.15.1", :advertisement-interval "5"}}
+    {:neighbor {:neighbor-address "10.0.13.1", :remote-as 65528}}
+    {:neighbor
+     {:neighbor-address "10.0.13.1",
+      :neighbor-options "next-hop-self"}}
+    {:neighbor
+     {:neighbor-address "10.0.13.1", :send-community-options "both"}}
+    {:neighbor
+     {:neighbor-address "10.0.13.1", :advertisement-interval "5"}}
+    {:neighbor {:neighbor-address "10.0.11.1", :remote-as 65529}}
+    {:neighbor
+     {:neighbor-address "10.0.11.1",
+      :neighbor-options "next-hop-self"}}
+    {:neighbor
+     {:neighbor-address "10.0.11.1", :send-community-options "both"}}
+    {:neighbor
+     {:neighbor-address "10.0.11.1", :advertisement-interval "5"}}
+    {:neighbor {:neighbor-address "10.0.9.1", :remote-as 65530}}
+    {:neighbor
+     {:neighbor-address "10.0.9.1", :neighbor-options "next-hop-self"}}
+    {:neighbor
+     {:neighbor-address "10.0.9.1", :send-community-options "both"}}
+    {:neighbor
+     {:neighbor-address "10.0.9.1", :advertisement-interval "5"}}
+    {:neighbor
+     {:neighbor-address "10.0.18.2",
+      :neighbor-route-map {:route-map "rm-in", :direction "in"}}}
+    {:neighbor
+     {:neighbor-address "10.0.18.2",
+      :neighbor-route-map
+      {:route-map "rm-export-2", :direction "out"}}}
+    {:neighbor
+     {:neighbor-address "10.0.19.2",
+      :neighbor-route-map {:route-map "rm-in", :direction "in"}}}
+    {:neighbor
+     {:neighbor-address "10.0.19.2",
+      :neighbor-route-map
+      {:route-map "rm-export-2", :direction "out"}}}
+    {:neighbor
+     {:neighbor-address "10.0.15.1",
+      :neighbor-route-map {:route-map "rm-in", :direction "in"}}}
+    {:neighbor
+     {:neighbor-address "10.0.15.1",
+      :neighbor-route-map
+      {:route-map "rm-export-1", :direction "out"}}}
+    {:neighbor
+     {:neighbor-address "10.0.13.1",
+      :neighbor-route-map {:route-map "rm-in", :direction "in"}}}
+    {:neighbor
+     {:neighbor-address "10.0.13.1",
+      :neighbor-route-map
+      {:route-map "rm-export-1", :direction "out"}}}
+    {:neighbor
+     {:neighbor-address "10.0.11.1",
+      :neighbor-route-map {:route-map "rm-in", :direction "in"}}}
+    {:neighbor
+     {:neighbor-address "10.0.11.1",
+      :neighbor-route-map
+      {:route-map "rm-export-1", :direction "out"}}}
+    {:neighbor
+     {:neighbor-address "10.0.9.1",
+      :neighbor-route-map {:route-map "rm-in", :direction "in"}}}
+    {:neighbor
+     {:neighbor-address "10.0.9.1",
+      :neighbor-route-map
+      {:route-map "rm-export-1", :direction "out"}}}]},
+  :ip-prefix-list
+  [{:prefix-list-name "pl-1",
+    :prefix-perm "permit",
+    :ip-prefix "1.0.0.0/24"}
+   {:prefix-list-name "pl-2",
+    :prefix-perm "deny",
+    :ip-prefix "1.0.0.0/24"}
+   {:prefix-list-name "pl-3",
+    :prefix-perm "permit",
+    :ip-prefix "1.0.1.0/24"}
+   {:prefix-list-name "pl-4",
+    :prefix-perm "deny",
+    :ip-prefix "1.0.1.0/24"}
+   {:prefix-list-name "pl-5",
+    :prefix-perm "permit",
+    :ip-prefix "2.0.0.0/24"}
+   {:prefix-list-name "pl-6",
+    :prefix-perm "deny",
+    :ip-prefix "2.0.0.0/24"}
+   {:prefix-list-name "pl-7",
+    :prefix-perm "permit",
+    :ip-prefix "2.0.1.0/24"}
+   {:prefix-list-name "pl-8",
+    :prefix-perm "deny",
+    :ip-prefix "2.0.1.0/24"}
+   {:prefix-list-name "pl-9",
+    :prefix-perm "permit",
+    :ip-prefix "0.0.0.0/0",
+    :le "32"}
+   {:prefix-list-name "pl-10",
+    :prefix-perm "deny",
+    :ip-prefix "0.0.0.0/0",
+    :le "32"}],
+  :ip-community-list
+  [{:ip-community-list-standard
+    {:community-list-name "cl-1",
+     :community-perm "permit",
+     :community "200:1"}}
+   {:ip-community-list-standard
+    {:community-list-name "cl-2",
+     :community-perm "permit",
+     :community "200:2"}}
+   {:ip-community-list-standard
+    {:community-list-name "cl-3",
+     :community-perm "permit",
+     :community "100:1"}}
+   {:ip-community-list-standard
+    {:community-list-name "cl-4",
+     :community-perm "permit",
+     :community "100:2"}}
+   {:ip-community-list-standard
+    {:community-list-name "cl-5",
+     :community-perm "permit",
+     :community "100:3"}}
+   {:ip-community-list-standard
+    {:community-list-name "cl-6",
+     :community-perm "permit",
+     :community "100:4"}}
+   {:ip-community-list-standard
+    {:community-list-name "LOCAL",
+     :community-perm "permit",
+     :community "100:4"}}],
+  :ip-as-path-list
+  [{:access-list-record
+    {:path "path-1",
+     :as-path-perm "permit",
+     :as-path-regex "^\\(?(65527|65528|65529|65530)_"}}
+   {:access-list-record
+    {:path "path-3",
+     :as-path-perm "permit",
+     :as-path-regex "^\\(?300_"}}
+   {:access-list-record
+    {:path "path-4",
+     :as-path-perm "permit",
+     :as-path-regex "^\\(?200_"}}],
+  :route-map-list
+  [{:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "10",
+     :match-ip-address-prefix-list "pl-1",
+     :match-as-path "path-1",
+     :route-map-set-community "100:1",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "20",
+     :match-ip-address-prefix-list "pl-2"}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "30",
+     :match-ip-address-prefix-list "pl-3",
+     :match-as-path "path-1",
+     :route-map-set-community "100:1",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "40",
+     :match-ip-address-prefix-list "pl-4"}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "50",
+     :match-ip-address-prefix-list "pl-5",
+     :match-as-path "path-1",
+     :route-map-set-community "100:2",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "60",
+     :match-ip-address-prefix-list "pl-6"}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "70",
+     :match-ip-address-prefix-list "pl-7",
+     :match-as-path "path-1",
+     :route-map-set-community "100:2",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "80",
+     :match-ip-address-prefix-list "pl-8"}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "90",
+     :match-ip-address-prefix-list "pl-9",
+     :match-as-path "path-3",
+     :route-map-set-community "100:3",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "100",
+     :match-community "cl-1",
+     :match-ip-address-prefix-list "pl-9",
+     :match-as-path "path-1",
+     :route-map-set-community "100:1",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "110",
+     :match-ip-address-prefix-list "pl-9",
+     :match-as-path "path-4",
+     :set-local-preference "99",
+     :route-map-set-community "100:4",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "120",
+     :match-community "cl-2",
+     :match-ip-address-prefix-list "pl-9",
+     :match-as-path "path-1",
+     :set-local-preference "99",
+     :route-map-set-community "100:1",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-in",
+     :route-map-perm "permit",
+     :order "130",
+     :match-ip-address-prefix-list "pl-10"}}
+   {:route-map-record
+    {:route-map-name "rm-export-1",
+     :route-map-perm "permit",
+     :order "10",
+     :match-community "cl-3"}}
+   {:route-map-record
+    {:route-map-name "rm-export-1",
+     :route-map-perm "permit",
+     :order "20",
+     :match-community "cl-4"}}
+   {:route-map-record
+    {:route-map-name "rm-export-1",
+     :route-map-perm "permit",
+     :order "30",
+     :match-community "cl-5",
+     :route-map-set-community "200:1",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-export-1",
+     :route-map-perm "permit",
+     :order "40",
+     :match-community "cl-6",
+     :route-map-set-community "200:2",
+     :set-community-option [:additive]}}
+   {:route-map-record
+    {:route-map-name "rm-export-2",
+     :route-map-perm "permit",
+     :order "10",
+     :match-community "cl-4"}}]}}
+~~~
