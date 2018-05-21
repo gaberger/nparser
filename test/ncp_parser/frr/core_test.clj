@@ -1,9 +1,9 @@
-(ns ncp-parser.core-test
+(ns ncp-parser.frr.core-test
   (:require [clojure.test :refer :all]
             [clojure.java.io :as io]
             [clojure.spec.alpha :as s]
-            [ncp-parser.core :refer :all]
-            [ncp-parser.spec :refer :all]
+            [ncp-parser.frr.core :refer :all]
+            [ncp-parser.frr.spec :refer :all]
             [instaparse.core :as insta :refer [defparser]]))
 
 

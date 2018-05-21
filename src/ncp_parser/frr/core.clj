@@ -1,4 +1,4 @@
-(ns ncp-parser.core
+(ns ncp-parser.frr.core
  (:require [instaparse.core :as insta :refer [defparser]]
            [clojure.pprint :as pprint :refer [pprint]]
            [clojure.java.io :as io]
@@ -82,7 +82,7 @@
         :route-map-set-list        (fn route-map-set-list [& arg]
                                        (conj [] :route-map-set-list (reduce conj {} arg)))
         :route-map-record          (fn route-map-record [& arg]
-                                       (conj [] :route-map-record (reduce conj {} arg)))
+                                       (assoc {} :route-map-record (reduce conj {} arg)))
         :bgp-confederation          (fn c [& arg]
                                       (assoc {} :bgp-confederation (reduce conj {} arg)))
         :confederation-peers        (fn cp [& arg]
