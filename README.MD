@@ -18,17 +18,6 @@ add command line arguments to process configurations and a service endpoint
 
 [https://raw.githubusercontent.com/gaberger/ncp_parser/master/resources/configs/frr/router1.cfg]
 
-```
-router bgp 65525
-    no synchronization
-    bgp router-id 192.0.0.1
-    bgp always-compare-med
-    bgp deterministic-med
-    bgp bestpath compare-routerid
-    bgp bestpath as-path confed
-    bgp confederation identifier 100
-    bgp confederation peers 65527 65528 65529 65530"
-```
 
 ## EBNF Parser Function
 
@@ -38,7 +27,7 @@ Create a parser based on grammar stored at `resources/parsers`
 
 ```Then you can use the parser against configurations such as:```
 
-```(frr (slurp (io/resource "configs/router1.cfg")))```
+```(frr (slurp (io/resource "configs/frr/router1.cfg")))```
 
 #### Example grammar
 
