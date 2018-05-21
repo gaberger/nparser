@@ -40,13 +40,29 @@ Create a parser based on grammar stored at `resources/parsers`
 
 #### Example grammar
 
-```
+~~~BNF
 (*This is the EBNF Grammar for FRR router*)
 
-bgprouter = bgp-global bgp-med bgp-bestpath bgp-confederation
+
+device = hostname interface-list router ip-prefix-list ip-community-list ip-as-path-list route-map-list
+(* ip-prefix-list ip-community-list *)
+
+hostname = <'hostname'> word
+
+(* interface section *)
+
+interface-list = interface*
+interface = (interface-name ip-cidr)*
+
+interface-name = <'interface'> word
+ip-cidr = <'ip address'> cidr
+
+
+(* router section *)
+router = bgp-global bgp-med bgp-bestpath bgp-confederation neighbor-list
 
 bgp-global =  (otherkeys | asn | router-id)*
-asn =  <'router bgp'> number
+asn =  &'router bgp' <'router bgp'> number
 otherkeys = 'no synchronization'
 
 bgp-med = (<'bgp'> bgp)*
@@ -63,26 +79,133 @@ bgp-confederation = &'bgp confederation' (<'bgp confederation'> confederation)*
 confederation-identifier =  <'identifier'> number+
 confederation-peers = <'peers'> number+
 
+neighbor-list = (neighbor-term neighbor)*
+neighbor =  neighbor-address (remote-as | neighbor-options | send-community | advertisement-interval | neighbor-route-map)*
+
+remote-as = <'remote-as'> number
+neighbor-options = next-hop-self | update-source
+<send-community> = <'send-community'> send-community-options
+neighbor-address = address
+<neighbor-term> = <'neighbor'>
+
+advertisement-interval = <'advertisement-interval'> number
+<next-hop-self> = 'next-hop-self' ?['all']
+<update-source> = 'update-source' (if-name | address)
+if-name = word
+send-community-options = send-community-both
+<send-community-both> = 'both'
+
+neighbor-route-map = route-map direction
+route-map = <'route-map'> rm
+direction = 'in' | 'out'
+<rm> = word
+
+(* ip prefix list *)
+(* TODO more work here *)
+ip-prefix-list = (<'ip prefix-list'>  ip-prefix-record)*
+ip-prefix-record = prefix-list-name prefix-perm ip-prefix ?[range]
+prefix-list-name = word
+ip-prefix = prefix
+prefix-perm = permit | deny
+<range> = (le  | gt)
+le = <'le'> number
+gt = <'gt'> number
+
+(* ip community list *)
+ip-community-list = (<'ip community-list'> ip-community-options)*
+<ip-community-options> = ip-community-list-standard | ip-community-list-expanded
+
+ip-community-list-standard = <'standard'> community-list-name community-perm community+
+ip-community-list-expanded = <'expanded'> community-list-name community-perm community+
+
+
+
+
+(* ip as-path *)
+ip-as-path-list = (<'ip as-path'> access-list-record)*
+access-list-record = <'access-list'> path as-path-perm as-path-regex
+path = word
+as-path-perm = permit | deny
+as-path-regex = word
+
+(* route map *)
+route-map-list = (<'route-map'> route-map-record)*
+route-map-record = route-map-name route-map-perm order match-list* ?[route-map-set-list*]
+
+route-map-name = word
+route-map-perm = permit | deny
+order = number
+
+(* route match list *)
+<match-list> = match-list1 | match-list2 | match-list3
+<match-list1> = match-ip-address-access-list | match-ip-address-prefix-list | match-ip-address-prefix-len
+<match-list2> = match-ip-next-hop | match-as-path  | match-metric | match-tag | match-local-preference
+<match-list3> = match-community | match-peer-interface-name | match-source-protocol | match-source-instance
+
+(* route match terminators *)
+match-ip-address-access-list = <'match ip address access-list'>  number
+match-ip-address-prefix-list = <'match ip address prefix-list'>  word
+match-ip-address-prefix-len = <'match ip address prefix-len'> number
+(* match-ipv6-address-access-list = ipv6address *)
+(* match-ipv6-address-prefix-list = word *)
+match-ip-next-hop = <'match ip next-hop'> ipv4address
+match-as-path = <'match as-path'> word
+match-metric = <'match metric'> number
+match-tag = (<'match tag'>  number)
+match-local-preference = <'match local-preference'> number
+match-community = <'match community'> word
+(* match-peer-ipv4 = <'match peer'>  ipv4address
+   match-peer-ipv6 = <'match peer'>  ipv6address *)
+match-peer-interface-name = <'match peer'> word
+match-source-protocol = <'match source-protocol'> word
+match-source-instance = <'match source-instance'> number
+
+
+(* route map set list *)
+<route-map-set-list> = set-list1 | set-list2
+<set-list1> = set-tag | set-ip-next-hop | set-ip-next-hop-peer-address | set-ip-next-hop-unchanged
+<set-list2> = set-local-preference | set-weight | set-metric | set-as-path-prepend | set-community
+
+set-tag = <'set tag'> word
+set-ip-next-hop = <'set ip next-hop'> ipv4address
+set-ip-next-hop-peer-address = <'set ip next-hop'> ipv4address
+set-ip-next-hop-unchanged = <'set ip next-hop unchanged'>
+(*
+set ipv6 next-hop peer-address
+set ipv6 next-hop prefer-global
+set ipv6 next-hop global IPV6_ADDRESS
+*)
+
+(* route map set terminators *)
+set-local-preference = <'set local-preference'> number
+set-weight = <'set weight'> number
+set-metric = <'set metric'> number
+(* ? *)
+set-as-path-prepend = <'set as-path prepend'> number
+<set-community> = <'set community'> route-map-set-community ?[set-community-option]
+route-map-set-community = community-type
+set-community-option = additive
+additive = <'additive'>
+(* set ipv6 next-hop local IPV6_ADDRESS *)
+
+community-perm = permit | deny
+community-list-name = word
+community = community-type
+
+(* Primitives *)
+<community-type> = number #":" number
+<permit> = 'permit'
+<deny> = 'deny'
+<ipv4address> = address
 <address> = #"\d+\.\d+\.\d+\.\d+"
+<cidr> = (address '/' number)
+<prefix> = cidr
 <number> = #"[0-9]+"
+<token> = word | number
+<word> = #'[a-zA-Z0-9()\\.,-^?_|]+'
+<number> = #'[0-9]+'
 
-```
-
-<!-- ## Sample Output
-
-```
-#> clj -m ncp-parser.core
-{:bgprouter
- {:bgp-global
-  {:asn 65525,
-   :otherkeys "no synchronization",
-   :router-id "192.0.0.1"},
-  :bgp-med ["always-compare-med" "deterministic-med"],
-  :bgp-bestpath ["compare-routerid" "as-path confed"],
-  :bgp-confederation
-  {:confederation-identifier 100,
-   :confederation-peers #{65529 65528 65527 65530}}}}
-``` -->
+~~~
 
 
 ## Clojure SPEC Validator

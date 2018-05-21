@@ -6,14 +6,13 @@ device = hostname interface-list router ip-prefix-list ip-community-list ip-as-p
 
 hostname = <'hostname'> word
 
-
 (* interface section *)
 
 interface-list = interface*
-interface = (interface-name ip-address)*
+interface = (interface-name ip-cidr)*
 
 interface-name = <'interface'> word
-ip-address = <'ip address'> cidr
+ip-cidr = <'ip address'> cidr
 
 
 (* router section *)
@@ -36,30 +35,6 @@ bgp-confederation = &'bgp confederation' (<'bgp confederation'> confederation)*
 <confederation> = (confederation-identifier | confederation-peers)
 confederation-identifier =  <'identifier'> number+
 confederation-peers = <'peers'> number+
-
-
-(*
-
-neighbor 10.0.18.2 remote-as 200
-  neighbor 10.0.19.2 remote-as 300
-  neighbor 10.0.15.1 remote-as 65527
-  neighbor 10.0.15.1 next-hop-self
-  neighbor 10.0.15.1 send-community both
-
-[:neighbor-list
-   [:neighbor "10.0.18.2" [:remote-as "200"]]
-
-
-interface-list = interface*
-interface = (interface-name ip-address)*
-
-interface-name = <'interface'> word
-ip-address = <'ip address'> cidr
-
-[:interface
-   [:interface-name "eth1"]
-   [:ip-address "10.0.19.1" "/" "24"]]
-*)
 
 neighbor-list = (neighbor-term neighbor)*
 neighbor =  neighbor-address (remote-as | neighbor-options | send-community | advertisement-interval | neighbor-route-map)*
@@ -100,9 +75,7 @@ ip-community-list = (<'ip community-list'> ip-community-options)*
 ip-community-list-standard = <'standard'> community-list-name community-perm community+
 ip-community-list-expanded = <'expanded'> community-list-name community-perm community+
 
-community-perm = permit | deny
-community-list-name = word
-community = number #":" number
+
 
 
 (* ip as-path *)
@@ -146,7 +119,7 @@ match-source-instance = <'match source-instance'> number
 
 
 (* route map set list *)
-route-map-set-list = set-list1 | set-list2
+<route-map-set-list> = set-list1 | set-list2
 <set-list1> = set-tag | set-ip-next-hop | set-ip-next-hop-peer-address | set-ip-next-hop-unchanged
 <set-list2> = set-local-preference | set-weight | set-metric | set-as-path-prepend | set-community
 
@@ -166,13 +139,18 @@ set-weight = <'set weight'> number
 set-metric = <'set metric'> number
 (* ? *)
 set-as-path-prepend = <'set as-path prepend'> number
-<set-community> = <'set community'> community ?[set-community-option]
+<set-community> = <'set community'> route-map-set-community ?[set-community-option]
+route-map-set-community = community-type
 set-community-option = additive
 additive = <'additive'>
 (* set ipv6 next-hop local IPV6_ADDRESS *)
 
+community-perm = permit | deny
+community-list-name = word
+community = community-type
 
 (* Primitives *)
+<community-type> = number #":" number
 <permit> = 'permit'
 <deny> = 'deny'
 <ipv4address> = address
