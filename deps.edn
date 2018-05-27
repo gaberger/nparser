@@ -19,4 +19,8 @@
             :proto {:extra-deps {proto-repl {:mvn/version "RELEASE"}}}
             :socket {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
             :nrepl {:extra-deps {org.clojure/tools.nrepl {:mvn/version "0.2.12"}}
-                    :main-opts ["-e" "(require,'[clojure.tools.nrepl.server,:refer,[start-server]]),(start-server,:port,5555)"]}}}
+                    :main-opts ["-e" "(require,'[clojure.tools.nrepl.server,:refer,[start-server]]),(start-server,:port,5555)"]}
+            :depstar
+              {:extra-deps
+                 {com.healthfinch/depstar {:git/url "https://github.com/healthfinch/depstar.git"
+                                           :sha "4aa7b35189693feebc7d7e4a180b8af0326c9164"}}}}}
