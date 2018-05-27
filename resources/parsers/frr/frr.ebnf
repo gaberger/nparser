@@ -14,8 +14,8 @@ interface = (interface-name ip-cidr)*
 interface-name = <'interface'> word
 ip-cidr = <'ip address'> cidr
 
-
 (* router section *)
+
 router = bgp-global bgp-med bgp-bestpath bgp-confederation neighbor-list
 
 bgp-global =  (otherkeys | asn | router-id)*
@@ -58,6 +58,7 @@ direction = 'in' | 'out'
 <rm> = word
 
 (* ip prefix list *)
+
 (* TODO more work here *)
 ip-prefix-list = (<'ip prefix-list'>  ip-prefix-record)*
 ip-prefix-record = prefix-list-name prefix-perm ip-prefix ?[range]
@@ -69,16 +70,15 @@ le = <'le'> number
 gt = <'gt'> number
 
 (* ip community list *)
+
 ip-community-list = (<'ip community-list'> ip-community-options)*
 <ip-community-options> = ip-community-list-standard | ip-community-list-expanded
 
 ip-community-list-standard = <'standard'> community-list-name community-perm community+
 ip-community-list-expanded = <'expanded'> community-list-name community-perm community+
 
-
-
-
 (* ip as-path *)
+
 ip-as-path-list = (<'ip as-path'> access-list-record)*
 access-list-record = <'access-list'> path as-path-perm as-path-regex
 path = word
@@ -86,6 +86,7 @@ as-path-perm = permit | deny
 as-path-regex = word
 
 (* route map *)
+
 route-map-list = (<'route-map'> route-map-record)*
 route-map-record = route-map-name route-map-perm order match-list* ?[route-map-set-list*]
 
@@ -94,12 +95,14 @@ route-map-perm = permit | deny
 order = number
 
 (* route match list *)
+
 <match-list> = match-list1 | match-list2 | match-list3
 <match-list1> = match-ip-address-access-list | match-ip-address-prefix-list | match-ip-address-prefix-len
 <match-list2> = match-ip-next-hop | match-as-path  | match-metric | match-tag | match-local-preference
 <match-list3> = match-community | match-peer-interface-name | match-source-protocol | match-source-instance
 
 (* route match terminators *)
+
 match-ip-address-access-list = <'match ip address access-list'>  number
 match-ip-address-prefix-list = <'match ip address prefix-list'>  word
 match-ip-address-prefix-len = <'match ip address prefix-len'> number
@@ -119,6 +122,7 @@ match-source-instance = <'match source-instance'> number
 
 
 (* route map set list *)
+
 <route-map-set-list> = set-list1 | set-list2
 <set-list1> = set-tag | set-ip-next-hop | set-ip-next-hop-peer-address | set-ip-next-hop-unchanged
 <set-list2> = set-local-preference | set-weight | set-metric | set-as-path-prepend | set-community
@@ -134,6 +138,7 @@ set ipv6 next-hop global IPV6_ADDRESS
 *)
 
 (* route map set terminators *)
+
 set-local-preference = <'set local-preference'> number
 set-weight = <'set weight'> number
 set-metric = <'set metric'> number

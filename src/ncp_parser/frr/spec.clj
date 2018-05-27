@@ -2,9 +2,7 @@
     (:require [clojure.spec.alpha :as s]
               [clojure.spec.gen.alpha :as sgen]
               [clojure.java.io :as io]
-              [miner.strgen :as sg]
-              [expound.alpha :as expound]
-              [clojure.pprint :as pprint :refer [pprint]]))
+              [miner.strgen :as sg]))
 
 
 
