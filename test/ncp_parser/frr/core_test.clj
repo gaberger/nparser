@@ -25,7 +25,15 @@
                (let [configuration (slurp (io/resource "configs/frr/router1.cfg"))
                      _  (create-frr-parser)
                      transform-map (frr-transform (frr configuration))]
+                  (when (not (s/valid? :unq/device transform-map))
+                      (print (s/explain-str :unq/device transform-map)))
                   (s/valid? :unq/device transform-map)))))
+  ; (testing "Transformed Spec Eval"
+  ;   (is (not (= "Success"
+  ;              (let [configuration (slurp (io/resource "configs/frr/router1.cfg"))
+  ;                    _  (create-frr-parser)
+  ;                    transform-map (frr-transform (frr configuration))]
+  ;               (s/explain-str :unq/device transform-map))))))
 
   (testing "Generating Spec"
     (is (true?
