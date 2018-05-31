@@ -4,8 +4,6 @@
               [clojure.java.io :as io]
               [miner.strgen :as sg]))
 
-
-
 ; Specs
 (s/def ::valid-lower-asn  (s/int-in 1 64495))
 (s/def ::valid-higher-asn (s/int-in 64512 65535))

@@ -16,8 +16,9 @@
                                        (assoc {} :bgp-bestpath (into [] arg)))
         :interface                 (fn interface [& arg]
                                      (reduce conj {} arg))
-        :interface-list            (fn interface-list [& arg]
-                                       (assoc {} :interface-list (into [] arg)))
+        :interface-name            (comp #(conj [] :name %) str)
+        :interfaces                (fn interface-list [& arg]
+                                       (assoc {} :interfaces (into [] arg)))
         :ip-prefix-list            (fn ip-prefix-list [& arg]
                                        (assoc {} :ip-prefix-list (into [] arg)))
         :ip-prefix                 (comp #(conj [] :ip-prefix %) str)
@@ -38,8 +39,8 @@
                                       (assoc {} :route-map-list (into [] arg)))
         :neighbor-list            (fn neighbor-list [& arg]
                                     (assoc {} :neighbor-list (into [] arg)))
-        :hostname                 (fn hostname [& arg]
-                                        (assoc {} :hostname (first arg)))
+        :name                     (fn name [& arg]
+                                        (assoc {} :name (first arg)))
         :router                     (fn router [& arg]
                                         (assoc {} :router (into {} arg)))
         :access-list-record        (fn access-list-record  [& arg]
@@ -58,6 +59,6 @@
                                       (conj [] :confederation-peers (into #{} (map #(clojure.edn/read-string %) arg))))
         :confederation-identifier   (fn ci [arg]
                                        {:confederation-identifier  (clojure.edn/read-string arg)})
-        :device                     (fn device [& arg]
-                                       (assoc {} :device (into {} arg)))}
+        :configuration              (fn configuration [& arg]
+                                       (assoc {} :configuration (into {} arg)))}
    input))

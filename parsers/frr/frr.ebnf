@@ -1,14 +1,14 @@
 (*This is the EBNF Grammar for FRR router*)
 
 
-device = hostname interface-list router ip-prefix-list ip-community-list ip-as-path-list route-map-list
+configuration = name interfaces router ip-prefix-list ip-community-list ip-as-path-list route-map-list
 (* ip-prefix-list ip-community-list *)
 
-hostname = <'hostname'> word
+name = <'hostname'> word
 
 (* interface section *)
 
-interface-list = interface*
+interfaces = interface*
 interface = (interface-name ip-cidr)*
 
 interface-name = <'interface'> word

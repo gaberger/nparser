@@ -17,7 +17,7 @@
      :auto-whitespace whitespace))
 
 (defn create-frr-parser []
-    (let [grammar (io/resource "parsers/frr/frr.ebnf")]
+    (let [grammar (io/file "parsers/frr/frr.ebnf")]
       (defparser  frr
          grammar
         :output-format :hiccup
@@ -25,14 +25,14 @@
         :auto-whitespace whitespace-or-comments)))
 
 
-(defmacro create-parser [device]
-    (let [grammar-file (str/join "." [device "ebnf"])
-          grammar (io/resource (str/join "/" ["parsers" grammar-file]))]
-      `(defparser  ~(symbol device)
-         ~grammar
-        :output-format :hiccup
-        :string-ci true
-        :auto-whitespace whitespace-or-comments)))
+; (defmacro create-parser [device]
+;     (let [grammar-file (str/join "." [device "ebnf"])
+;           grammar (io/resource (str/join "/" ["parsers" grammar-file]))]
+;       `(defparser  ~(symbol device)
+;          ~grammar
+;         :output-format :hiccup
+;         :string-ci true
+;         :auto-whitespace whitespace-or-comments)))
 
 (defn debug-transform [& arg]
   (println "---------------------")
@@ -43,4 +43,4 @@
 
 (defn parse-frr []
    (create-frr-parser)
-   (pprint (->> (frr (slurp (io/resource "configs/frr/router1.cfg"))) frr-transform)))
+   (pprint (->> (frr (slurp (io/file "configs/frr/router1.cfg"))) frr-transform)))

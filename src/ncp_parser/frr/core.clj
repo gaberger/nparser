@@ -3,7 +3,7 @@
             [clojure.string :as str]
             [eftest.runner :refer [find-tests run-tests]]
             [ncp-parser.frr.parser :refer [parse-frr]])
- (:gen-class)) 
+ (:gen-class))
 
 (defn error-msg [errors]
   (str "The following errors occurred while parsing your command:\n\n"
@@ -20,7 +20,6 @@
         options-summary
         ""
         "Actions:"
-        "  test      Run all tests"
         "  parse     Parse example frr router config"
         ""
         "Please refer to the manual page for more information."]
@@ -40,7 +39,7 @@
       (:help options) {:exit-message (usage summary) :ok? true}
       errors {:exit-message (error-msg errors)}
       (and (= 1 (count arguments))
-           (#{"test" "parse"} (first arguments)))
+           (#{"parse"} (first arguments)))
       {:action (first arguments) :options options}
       :else {:exit-message (usage summary)})))
 
@@ -52,6 +51,4 @@
     (if exit-message
       (exit (if ok? 0 1) exit-message)
       (case action
-        "test" (run-tests (find-tests "test"))
         "parse" (parse-frr)))))
-
