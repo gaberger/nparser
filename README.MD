@@ -533,3 +533,9 @@ community = community-type
      :order "10",
      :match-community "cl-4"}}]}}
 ~~~
+
+
+#### Notes:
+
+Pull raw content from github
+https://raw.githubusercontent.com/gaberger/ncp_parser/master/configs/frr/router1.cfg

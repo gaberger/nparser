@@ -16,13 +16,12 @@
 	     comment = '!'"
      :auto-whitespace whitespace))
 
-(defn create-frr-parser []
-    (let [grammar (io/file "parsers/frr/frr.ebnf")]
+(defn create-frr-parser [grammar]
       (defparser  frr
          grammar
         :output-format :hiccup
         :string-ci true
-        :auto-whitespace whitespace-or-comments)))
+        :auto-whitespace whitespace-or-comments))
 
 
 ; (defmacro create-parser [device]
