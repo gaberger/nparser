@@ -40,6 +40,6 @@
   (println (type arg))
   arg)
 
-(defn parse-frr []
-   (create-frr-parser)
-   (pprint (->> (frr (slurp (io/file "configs/frr/router1.cfg"))) frr-transform)))
+(defn parse-frr [grammar config]
+   (create-frr-parser grammar)
+   (frr-transform (frr config)))

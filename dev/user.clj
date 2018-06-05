@@ -1,14 +1,13 @@
 (ns user
   (:require
-   [clojure.tools.namespace.repl :refer :all]
-   [io.aviso.ansi]
-   [spyscope.core]))
+   [clojure.tools.namespace.repl :refer [refresh refresh-all]]))
+
 
 (defn dev
   "Call this to launch the dev system"
   []
-  (println "[ncp-parser] Loading Clojure code, please wait...")
-  (require 'dev)
+  (println "Switching to dev environment")
+  (refresh)
   (in-ns 'dev))
 
 (defn fixed!
