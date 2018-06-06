@@ -1,6 +1,6 @@
 {:device
  {:hostname "J",
-  :interface-list
+  :interfaces
   [{:interface-name "eth0", :ip-cidr "10.0.18.1/24"}
    {:interface-name "eth1", :ip-cidr "10.0.19.1/24"}
    {:interface-name "eth2", :ip-cidr "10.0.15.2/24"}
