@@ -21,7 +21,6 @@
   (some? (re-find options-regex tag)))
 
 (defn is-option-map? [m]
-  ; {:+<prefix> 0.0.0.0/0, :+le 32}
   (and (> (count m) 1)
        (some? (re-find options-regex (name (key (first m)))))))
 
@@ -43,11 +42,6 @@
 (defn regular-tag [tag]
   (let [tag-string (str tag \space)]
     (swap! container conj tag-string)))
-
-; (defn keyword-handler! [tag]
-;   (cond
-;    (is-transpose-tag? tag)  (transpose-tag tag)
-;    (is-regular-tag? tag)    (regular-tag  tag)))
 
 (defn keyword-handler! [tag]
   (let [tag-key (name tag)]
@@ -92,8 +86,6 @@
                                false (do (swap! container conj (str "no " fmt-option \newline)) node))
             (number? value) (do (swap! container conj (str fmt-option value \newline)) [nil nil])))
         node))
-    ; true  (swap! container conj (str fmt-option\newline))
-    ; false
     node))
 
 (defn map-handler! [node]
@@ -106,13 +98,14 @@
       (let [result (reduce
                      (fn [acc m]
                        (let [[option value] m
+                             _ (println "Processing option value " option value)
                              option-string (name option)
                              strip-tag (if (is-options-tag? option-string)
                                          (some->> (subs option-string 1)
                                                   skip-tag transpose-tag)
                                          option-string)]
                          (if (nil? strip-tag)
-                           (conj #spy/p acc (str value))
+                           (conj acc (str value))
                            (cond
                              (boolean? value) (condp = value
                                                 true (conj acc (str strip-tag))
@@ -125,23 +118,11 @@
       (empty {}))
     node))
 
-; {:<prefix> "0.0.0.0/0" :+le 32}))
-
-; (println "found options tag" (first node)  " --> " (rest node))
-
-
-; (defn check-vectors [node]
-;   (condp #(= (first %2) %1) node
-;     :ip_address (println "found ip_address in vector")
-;     :hostname (println "found hostname in vector")
-;     boolean? (println "found boolean in vector")
-;     node))
-
 (defn gen-config [node]
   (println "Working on node ->" node)
   (cond
     (is-regex? node) (regex-handler! node)
-    (string? #spy/p node) (do (string-handler! node) node)
+    (string? node) (do (string-handler! node) node)
     (number? node) (do (number-handler! node) node)
     (set? node) (do (set-handler! node) (println "NODE-->> " node) #{})
     (keyword? node) (do (keyword-handler! node) node)
@@ -151,7 +132,7 @@
 
 (def model
   {:<device>
-   {:hostname            {:<name> "J"}
+   {:hostname            "J"
     :<interfaces>
                          [{:interface {:<name> "eth0", :ip_address "10.0.18.1/24"}}
                           {:interface {:<name> "eth1", :ip_address "10.0.19.1/24"}}
@@ -208,15 +189,15 @@
                            :match_ip_address {:prefix-list "pl-1"}
                            :match_as-path    "path-1"
                            :set_community    {:+<community> "100:1" :+additive true}}
-                          {:route-map {:rm-in {:permit 120}}
-                           :match_community "cl-2"
-                           :match_ip_address {:prefix-list "pl-9"}
-                           :match_as-path "path-1"
+                          {:route-map            {:rm-in {:permit 120}}
+                           :match_community      "cl-2"
+                           :match_ip_address     {:prefix-list "pl-9"}
+                           :match_as-path        "path-1"
                            :set_local-preference 99
-                           :set_community {:+<community "100:1" :+additive true}}]}})
+                           :set_community        {:+<community> "100:1" :+additive true}}]}})
 
 
 
 (defn output_config []
-  (postwalk gen-config model)
+  (prewalk gen-config model)
   (print (str/join @container)))

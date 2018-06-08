@@ -69,13 +69,19 @@ prefix-perm = permit | deny
 le = <'le'> number
 gt = <'gt'> number
 
+
+
 (* ip community list *)
 
 ip-community-list = (<'ip community-list'> ip-community-options)*
-<ip-community-options> = ip-community-list-standard | ip-community-list-expanded
+<ip-community-options> = ip-community-list_standard | ip-community-list_expanded
 
-ip-community-list-standard = <'standard'> community-list-name community-perm community+
-ip-community-list-expanded = <'expanded'> community-list-name community-perm community+
+ip-community-list_standard = <'standard'> community-list-name community-perm community+
+ip-community-list_expanded = <'expanded'> community-list-name community-perm community+
+
+<community-list-name> = word
+<community-perm> = permit | deny
+community = community-type
 
 (* ip as-path *)
 
@@ -150,9 +156,7 @@ set-community-option = additive
 additive = <'additive'>
 (* set ipv6 next-hop local IPV6_ADDRESS *)
 
-community-perm = permit | deny
-community-list-name = word
-community = community-type
+
 
 (* Primitives *)
 <community-type> = number #":" number

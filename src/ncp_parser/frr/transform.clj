@@ -27,8 +27,8 @@
         :community                 (comp #(conj [] :community %) str)
         :route-map-set-community       (comp #(conj [] :route-map-set-community %) str)
 
-        :ip-community-list-standard  (fn icls [& arg]
-                                          (assoc {} :ip-community-list-standard (reduce conj {} arg)))
+        :ip-community-list_standard  (fn icls [& arg]
+                                          (assoc {} :<ip-community-list> (reduce conj {} arg)))
         :ip-community-list-extended  (fn icle [& arg]
                                           (assoc {} :ip-community-list-extended (reduce conj {} arg)))
         :ip-community-list           (fn ip-community-list [& arg]
