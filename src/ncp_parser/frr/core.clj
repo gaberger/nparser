@@ -1,8 +1,7 @@
 (ns ncp-parser.frr.core
  (:require  [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as str]
-            [eftest.runner :refer [find-tests run-tests]]
-            [ncp-parser.frr.parser :refer [parse-frr]])
+            [eftest.runner :refer [find-tests run-tests]])
  (:gen-class))
 
 (defn error-msg [errors]
@@ -46,9 +45,9 @@
 (defn exit [status msg]
   (println msg))
 
-(defn -main [& args]
-  (let [{:keys [action options exit-message ok?]} (validate-args args)]
-    (if exit-message
-      (exit (if ok? 0 1) exit-message)
-      (case action
-        "parse" (parse-frr)))))
+;(defn -main [& args]
+;  (let [{:keys [action options exit-message ok?]} (validate-args args)]
+;    (if exit-message
+;      (exit (if ok? 0 1) exit-message)
+;      (case action
+;        "parse" (parse-frr)))))
