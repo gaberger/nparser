@@ -1,0 +1,82 @@
+(*This is the EBNF Grammar for FRR router*)
+
+device = hostname interfaces router
+
+hostname = <'hostname'> word
+
+(* interface section *)
+interfaces = interface*
+interface = <'interface'> name ip_address
+
+interface-name = <'interface'> word
+name = word
+ip_address = <'ip address'> prefix
+
+
+(* router *)
+<router> = router_bgp
+
+(* router bgp *)
+router_bgp = routerbgp bgpflags bgplist neighbors
+<routerbgp> = <'router bgp'> asn
+asn = number
+
+<bgpflags> =  synchronization
+synchronization = bool? <'synchronization'>
+
+bgplist = (<'bgp'> bgp)*
+bgp = router-id | medoptions | bestpath | confederation
+
+router-id = <'router-id'> address
+<medoptions> = always-compare-med | deterministic-med
+always-compare-med = 'always-compare-med'
+deterministic-med =  'deterministic-med'
+
+bestpath = (<'bestpath'> bestpathoptions)*
+<bestpathoptions> = compare-routerid | as-path_confed
+compare-routerid = 'compare-routerid'
+as-path_confed = 'as-path confed'
+
+confederation = (<'confederation'> confederationoptions)*
+<confederationoptions> = identifier | peers
+peers = <'peers'> number+
+identifier = <'identifier'> number
+
+
+
+(* neighbors *)
+
+neighbors = (<'neighbor'> neighbor)*
+neighbor = naddr
+naddr = (address neighboroptions)*
+<neighboroptions> = neighborattrs | neighborvalues
+<neighborvalues> = next-hop-self
+next-hop-self = <'next-hop-self'>
+<neighborattrs> = remote-as | send-community | advertisement-interval | route-map
+remote-as = <'remote-as'> number
+send-community = <'send-community'> word
+advertisement-interval = <'advertisement-interval'> number
+
+route-map = (<'route-map'> map)
+map = (routemap direction)*
+<routemap> = word
+
+(* Primitives *)
+<direction> = in | out
+<in> = 'in'
+<out> = 'out'
+<bool> = 'no'
+no = <'no'>
+le = <'le'> number
+gt = <'gt'> number
+<community-type> = number #":" number
+<permit> = 'permit'
+<deny> = 'deny'
+<ipv4address> = address
+<address> = #"\d+\.\d+\.\d+\.\d+"
+<prefix> = cidr
+<cidr> = (address '/' number)
+<number> = #"[0-9]+"
+<token> = word | number
+<word> = #'[a-zA-Z0-9()\\.,-^?_|]+'
+<number> = #'[0-9]+'

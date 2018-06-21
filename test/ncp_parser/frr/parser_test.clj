@@ -4,7 +4,7 @@
             [ncp-parser.frr.parser :refer [create-frr-parser frr]]
             [ncp-parser.frr.spec :refer :all]
             [ncp-parser.frr.transform :refer [frr-transform]]
-            [ncp-parser.frr.utils :refer [get-github-file]]))
+            [ncp-parser.utils :refer [get-github-file]]))
 
 
 (deftest test-get-github-file

@@ -1,8 +1,12 @@
 (ns ncp-parser.frr.transform
  (:require [instaparse.core :as insta :refer [transform]]))
 
-
 (defn frr-transform [input]
+  (transform
+    {  :asn                      (fn asn [arg]
+                                     (assoc {} :asn (clojure.edn/read-string arg)))}))
+
+(defn frr-transform1 [input]
   (transform
     {
         :asn                      (fn asn [arg]

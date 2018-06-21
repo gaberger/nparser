@@ -32,6 +32,9 @@
        (not (is-transpose-tag? tag))
        (not (is-options-tag? tag))))
 
+; (defn transpose-tag [tag]
+;  (str/join \space (str/split tag #"_")))
+
 (defn transpose-tag [tag]
   (str (str/join \space (str/split tag #"_")) \space))
 
@@ -185,10 +188,10 @@
                           {:ip_as-path_access-list {:path-3 {:permit #"^\(?300_}"}}}
                           {:ip_as-path_access-list {:path-4 {:permit #"^\(?200_"}}}]
 
-    :<route-map-list>    [{:route-map        {:rm-in {:permit 10}}
-                           :match_ip_address {:prefix-list "pl-1"}
-                           :match_as-path    "path-1"
-                           :set_community    {:+<community> "100:1" :+additive true}}
+    :<route-map-list>    [{:route-map            {:rm-in {:permit 10}}
+                           :match_ip_address     {:prefix-list "pl-1"}
+                           :match_as-path        "path-1"
+                           :set_community        {:+<community> "100:1" :+additive true}}
                           {:route-map            {:rm-in {:permit 120}}
                            :match_community      "cl-2"
                            :match_ip_address     {:prefix-list "pl-9"}

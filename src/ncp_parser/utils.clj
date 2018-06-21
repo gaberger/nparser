@@ -1,10 +1,10 @@
-(ns ncp-parser.frr.utils
+(ns ncp-parser.utils
   (:require [org.httpkit.client :as http]
             [clojure.string :as str]
             [cheshire.core :refer :all]
             [clojure.tools.logging :refer [info]]))
 
-
+;
 (defn list-github-path [owner repo path]
   (let [resource "contents"
         api-base "https://api.github.com/repos"
