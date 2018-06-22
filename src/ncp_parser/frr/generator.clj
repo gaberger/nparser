@@ -4,18 +4,15 @@
             [clojure.zip :as zip]
             [clojure.walk :refer [prewalk]]
             [clojure.string :as str]
-            [taoensso.timbre :as timbre
-             :refer [log  trace  debug  info  warn  error  fatal  report
-                     logf tracef debugf infof warnf errorf fatalf reportf
-                     spy get-env]]
+            [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :as appenders]))
 
 (set! *warn-on-reflection* 1)
 
 (timbre/refer-timbre)
 (defonce logfile *ns*)
-(timbre/merge-config! {:level :debug
-                       :appenders {:println {:enabled? true}}})
+(timbre/merge-config! {:level     :debug
+                       :appenders {:println {:enabled? false}}})
 ;(timbre/merge-config!
 ;  {:appenders {:spit (appenders/spit-appender {:fname (str/join [logfile ".log"])})}})
 
@@ -69,7 +66,8 @@
 
 (defn set-handler! [node]
   (debug "adding set -->> " node)
-  (swap! container conj (str (str/join \space node) \newline)))
+  (swap! container conj (str (str/join \space node) \newline))
+  #{})
 
 (defn string-handler! [node]
   (debug "adding string -->> " node)

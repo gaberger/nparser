@@ -47,7 +47,7 @@
      :compare-routerid       (fn sync [& args] (chtobool :compare-routerid args))
      :as-path_confed         (fn sync [& args] (chtobool :as-path_confed args))
      :map                    (fn m [& args] (av args))
-     :route-map              #(assoc {} :routemap %)
+     :route-map              #(assoc {} :route-map %)
      :remote-as              #(assoc {} :remote-as %)
      :send-community         #(assoc {} :send-community %)
      :advertisement-interval #(assoc {} :advertisement-interval %)
@@ -62,6 +62,8 @@
      :bgp                    (fn bgp [& arg]
                                (assoc {} :bgp
                                          (reduce conj {} arg)))
-     :peers                  (fn peers [& arg]
-                               (conj [] :peers (into #{} (map #(clojure.edn/read-string %) arg))))}
+     :peers                 (fn peers [& arg]
+                               (assoc {} :peers (conj (into (sorted-set) arg))))
+     :identifier             (fn asn [arg]
+                               (assoc {} :identifier (clojure.edn/read-string arg)))}
     input))

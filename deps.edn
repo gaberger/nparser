@@ -11,7 +11,8 @@
            eftest                      {:mvn/version "0.5.2"}
            com.taoensso/timbre         {:mvn/version "4.10.0"}
            cheshire                    {:mvn/version "5.8.0"}
-           http-kit                    {:mvn/version "2.2.0"}}
+           http-kit                    {:mvn/version "2.3.0"}
+           io.forward/yaml             {:mvn/version "1.0.8"}}
  :paths   ["src" "test" "resources" "dev"]
 
  :aliases {

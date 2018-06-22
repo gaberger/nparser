@@ -2,10 +2,7 @@
  (:require  [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as str]
             [eftest.runner :refer [find-tests run-tests]]
-            [taoensso.timbre :as timbre
-             :refer [log  trace  debug  info  warn  error  fatal  report
-                     logf tracef debugf infof warnf errorf fatalf reportf
-                     spy get-env]]
+            [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :as appenders])
  (:gen-class))
 

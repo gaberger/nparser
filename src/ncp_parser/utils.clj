@@ -2,19 +2,14 @@
   (:require [org.httpkit.client :as http]
             [clojure.string :as str]
             [cheshire.core :refer :all]
-            [taoensso.timbre :as timbre
-             :refer [log  trace  debug  info  warn  error  fatal  report
-                     logf tracef debugf infof warnf errorf fatalf reportf
-                     spy get-env]]
+            [yaml.core :as yaml]
+            [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :as appenders]))
 
 (set! *warn-on-reflection* 1)
 
 (timbre/refer-timbre)
-(defonce logfile *ns*)
-(timbre/merge-config! {:appenders {:println {:enabled? false}}})
-(timbre/merge-config!
-  {:appenders {:spit (appenders/spit-appender {:fname (str/join [logfile ".log"])})}})
+
 ;
 (defn list-github-path [owner repo path]
   (let [resource "contents"
@@ -44,11 +39,16 @@
         body))))
 
 
-
-
-(defn get-grammar-file [file]
+(defn get-file [file]
   ;"//Volumes/jamastore1/WIP/ncp_parser/parsers/frr/frr.ebnf")
-  (->> (clojure.java.io/as-file file)  slurp))
+  (->> (clojure.java.io/as-file file) slurp))
 
-(defn get-config-file [file]
-  (->> (clojure.java.io/as-file file)  slurp))
+(defn edn->yaml [input]
+  (yaml/generate-string input :dumper-options {:flow-style :block}))
+
+(defn yaml->edn [input]
+  (yaml/parse-string input :keywords true))
+
+(defn get-yaml-config [file]
+  (-> (get-file file)
+      (yaml/parse-string :keywords true :constructor yaml.reader/passthrough-constructor)))

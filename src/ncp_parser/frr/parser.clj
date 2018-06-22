@@ -2,8 +2,7 @@
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
-            [instaparse.core :as insta :refer [parser]]
-            [ncp-parser.frr.transform :refer [frr-transform]]))
+            [instaparse.core :as insta :refer [parser]]))
 
 
 (def whitespace
