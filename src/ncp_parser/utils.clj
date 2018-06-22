@@ -2,15 +2,26 @@
   (:require [org.httpkit.client :as http]
             [clojure.string :as str]
             [cheshire.core :refer :all]
-            [clojure.tools.logging :refer [info]]))
+            [taoensso.timbre :as timbre
+             :refer [log  trace  debug  info  warn  error  fatal  report
+                     logf tracef debugf infof warnf errorf fatalf reportf
+                     spy get-env]]
+            [taoensso.timbre.appenders.core :as appenders]))
 
+(set! *warn-on-reflection* 1)
+
+(timbre/refer-timbre)
+(defonce logfile *ns*)
+(timbre/merge-config! {:appenders {:println {:enabled? false}}})
+(timbre/merge-config!
+  {:appenders {:spit (appenders/spit-appender {:fname (str/join [logfile ".log"])})}})
 ;
 (defn list-github-path [owner repo path]
   (let [resource "contents"
         api-base "https://api.github.com/repos"
         file-base (str/join "/" [owner repo])
         uri (str/join "/" [api-base owner repo resource path])
-        _ (info "Making request to " uri)]
+        _ (debug "Making request to " uri)]
     (let [{:keys [status headers body error] :as resp} @(http/get uri)]
       (if error
         false
@@ -26,7 +37,7 @@
   (let [{:keys [path repo owner]} m
         api-base "https://raw.githubusercontent.com"
         uri (str/join "/" [api-base owner repo branch path])
-        _ (info "Making request to " uri)]
+        _ (debug "Making request to " uri)]
     (let [{:keys [status headers body error] :as resp} @(http/get uri)]
       (if error
         false

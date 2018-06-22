@@ -1,8 +1,24 @@
 (ns ncp-parser.frr.core
  (:require  [clojure.tools.cli :refer [parse-opts]]
             [clojure.string :as str]
-            [eftest.runner :refer [find-tests run-tests]])
+            [eftest.runner :refer [find-tests run-tests]]
+            [taoensso.timbre :as timbre
+             :refer [log  trace  debug  info  warn  error  fatal  report
+                     logf tracef debugf infof warnf errorf fatalf reportf
+                     spy get-env]]
+            [taoensso.timbre.appenders.core :as appenders])
  (:gen-class))
+
+(set! *warn-on-reflection* 1)
+
+(timbre/refer-timbre)
+(defonce logfile *ns*)
+(timbre/merge-config! {:appenders {:println {:enabled? false}}})
+(timbre/merge-config!
+  {:appenders {:spit (appenders/spit-appender {:fname (str/join [logfile ".log"])})}})
+
+
+
 
 (defn error-msg [errors]
   (str "The following errors occurred while parsing your command:\n\n"
