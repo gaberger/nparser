@@ -16,3 +16,4 @@ pom.xml.asc
 .idea/
 ncp-parser.iml
 .rebel_readline_history
+*.log
