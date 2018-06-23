@@ -1,11 +1,11 @@
-(ns ncp-parser.frr.core-test
+(ns nparser.frr.core-test
   (:require  [clojure.test :refer :all]
              [clojure.java.io :as io]
              [clojure.spec.alpha :as s]
              [clojure.spec.gen.alpha :as sgen]
-             [ncp-parser.frr.parser :refer [create-frr-parser]]
+             [nparser.frr.parser :refer [create-frr-parser]]
              [instaparse.core :as insta :refer :all]
-             [ncp-parser.frr.spec :refer :all]))
+             [nparser.frr.spec :refer :all]))
 ;
 ;;
 ; (deftest frr-tests

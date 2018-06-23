@@ -1,8 +1,8 @@
-(ns ncp-parser.utils
+(ns nparser.utils
   (:require [org.httpkit.client :as http]
             [clojure.string :as str]
             [cheshire.core :refer :all]
-            [yaml.core :as yaml]
+            [yaml.core :as yaml :exlude [load]]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :as appenders]))
 
@@ -40,15 +40,13 @@
 
 
 (defn get-file [file]
-  ;"//Volumes/jamastore1/WIP/ncp_parser/parsers/frr/frr.ebnf")
   (->> (clojure.java.io/as-file file) slurp))
 
 (defn edn->yaml [input]
-  (yaml/generate-string input :dumper-options {:flow-style :block}))
+  (yaml/generate-string input))
 
 (defn yaml->edn [input]
-  (yaml/parse-string input :keywords true))
+  (yaml/parse-string input))
 
 (defn get-yaml-config [file]
-  (-> (get-file file)
-      (yaml/parse-string :keywords true :constructor yaml.reader/passthrough-constructor)))
+  (yaml/parse-string (get-file file)))

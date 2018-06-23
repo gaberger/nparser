@@ -1,4 +1,4 @@
-(ns ncp-parser.frr.transforms.v1.core
+(ns nparser.frr.transforms.v1.core
   (:require [clojure.string :as str]
             [instaparse.core :as insta :refer [transform]]))
 
@@ -48,7 +48,7 @@
      :as-path_confed         (fn sync [& args] (chtobool :as-path_confed args))
      :map                    (fn m [& args] (av args))
      :route-map              #(assoc {} :route-map %)
-     :remote-as              #(assoc {} :remote-as %)
+     :remote-as              #(assoc {} :remote-as (clojure.edn/read-string %))
      :send-community         #(assoc {} :send-community %)
      :advertisement-interval #(assoc {} :advertisement-interval %)
      :next-hop-self          #(assoc {} :+next-hop-self true)
@@ -62,7 +62,7 @@
      :bgp                    (fn bgp [& arg]
                                (assoc {} :bgp
                                          (reduce conj {} arg)))
-     :peers                 (fn peers [& arg]
+     :peers                  (fn peers [& arg]
                                (assoc {} :peers (conj (into (sorted-set) arg))))
      :identifier             (fn asn [arg]
                                (assoc {} :identifier (clojure.edn/read-string arg)))}

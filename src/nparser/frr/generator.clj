@@ -1,4 +1,4 @@
-(ns ncp-parser.frr.generator
+(ns nparser.frr.generator
   (:require [com.rpl.specter :refer :all]
             [com.rpl.specter.zipper :as SZ]
             [clojure.zip :as zip]
@@ -12,7 +12,7 @@
 (timbre/refer-timbre)
 (defonce logfile *ns*)
 (timbre/merge-config! {:level     :debug
-                       :appenders {:println {:enabled? false}}})
+                       :appenders {:println {:enabled? true}}})
 ;(timbre/merge-config!
 ;  {:appenders {:spit (appenders/spit-appender {:fname (str/join [logfile ".log"])})}})
 

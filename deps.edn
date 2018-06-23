@@ -12,7 +12,8 @@
            com.taoensso/timbre         {:mvn/version "4.10.0"}
            cheshire                    {:mvn/version "5.8.0"}
            http-kit                    {:mvn/version "2.3.0"}
-           io.forward/yaml             {:mvn/version "1.0.8"}}
+           io.forward/yaml             {:mvn/version "1.0.8"}
+           cli-matic                   {:mvn/version "0.1.11"}}
  :paths   ["src" "test" "resources" "dev"]
 
  :aliases {
@@ -35,7 +36,7 @@
                                 org.clojure/tools.namespace  {:mvn/version "0.2.11"}
                                 db/driver                    {:local/root "/mnt/jamastore1/WIP/cambada/target/cambada-1.0.0-SNAPSHOT.jar"}}
                     :main-opts ["-m" "cambada.native-image"
-                                "-m" "githubid.core"]}
+                                "-m" "nparser.frr.core"]}
            :uberjar
                    {:extra-deps
                                {org.clojure/tools.cli        {:mvn/version "0.3.7"}
@@ -43,7 +44,7 @@
                                 org.clojure/tools.namespace  {:mvn/version "0.2.11"}
                                 db/driver                    {:local/root "/mnt/jamastore1/WIP/cambada/target/cambada-1.0.0-SNAPSHOT.jar"}}
                     :main-opts ["-m" "cambada.uberjar"
-                                "-m" "githubid.core"]}}}
+                                "-m" "nparser.frr.core"]}}}
 
 ; :depstar
 ; {:extra-deps

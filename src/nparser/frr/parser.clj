@@ -1,4 +1,4 @@
-(ns ncp-parser.frr.parser
+(ns nparser.frr.parser
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]

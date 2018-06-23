@@ -1,11 +1,11 @@
-(ns ncp-parser.frr.generator-test
+(ns nparser.frr.generator-test
   (:require [clojure.test :refer :all]
             [com.rpl.specter :refer [ALL transform map-key select]]
-            [ncp-parser.frr.parser :refer [create-frr-parser]]
-            [ncp-parser.frr.spec :refer :all]
-            [ncp-parser.frr.transforms.v1.core :refer [transformer]]
-            [ncp-parser.frr.generator :as g]
-            [ncp-parser.utils :refer :all]
+            [nparser.frr.parser :refer [create-frr-parser]]
+            [nparser.frr.spec :refer :all]
+            [nparser.frr.transforms.v1.core :refer [transformer]]
+            [nparser.frr.generator :as g]
+            [nparser.utils :refer :all]
             [yaml.core :as yaml]
             [clojure.string :as str]))
 
