@@ -1,7 +1,6 @@
 (ns nparser.frr.transforms.v3.core
   (:require [clojure.string :as str]
-            [instaparse.core :as insta :refer [transform]]
-            [spyscope.core :refer :all]))
+            [instaparse.core :as insta :refer [transform]]))
 
 (defn av
   [args]

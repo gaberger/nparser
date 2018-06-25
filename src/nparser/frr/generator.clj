@@ -2,16 +2,15 @@
   (:require
     [clojure.zip :as zip]
     [clojure.walk :refer [prewalk]]
-    [clojure.string :as str]
     [taoensso.timbre :as timbre]
-    [taoensso.timbre.appenders.core :as appenders]))
+    [clojure.string :as str]))
 
-(set! *warn-on-reflection* 1)
+(set! *warn-on-reflection* true)
 
 (timbre/refer-timbre)
 (defonce logfile *ns*)
 (timbre/merge-config! {:level     :debug
-                       :appenders {:println {:enabled? true}}})
+                       :appenders {:println {:enabled? false}}})
 ;(timbre/merge-config!
 ;  {:appenders {:spit (appenders/spit-appender {:fname (str/join [logfile ".log"])})}})
 
@@ -85,15 +84,17 @@
     false))
 
 (defn n-element-vector? [node]
-  (if (and (vector? (fnext node))
-           (> (count (fnext node)) 2))
+  (if (and (not (map? (first node)))
+           (vector? (fnext node))
+           (> (count (fnext node)) 2)
+           (string? (last (fnext node))))
     true
     false))
 
 (defn vector-handler! [node]
-  (debug "executing vector-handler "node)
+  (debug "executing vector-handler " node)
   (cond
-    (n-element-vector? node)  (assoc {} (first node) (into #{} (fnext node)))
+    (n-element-vector? node) (assoc {} (first node) (into #{} (fnext node)))
     (two-element-vector? node) (let [[option value] node
                                      option-string (name option)]
                                  (if (is-options-tag? option-string)

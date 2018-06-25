@@ -1,7 +1,5 @@
 (ns nparser.frr.core
-  (:require [clojure.tools.cli :refer [parse-opts]]
-            [clojure.string :as str]
-            [cli-matic.core :refer :all]
+  (:require [cli-matic.core :refer :all]
             [nparser.frr.generator :refer [container] :as g]
             [nparser.frr.parser :refer :all]
             [nparser.utils :refer :all]
@@ -9,8 +7,7 @@
             [taoensso.timbre :as timbre]
             [yaml.core :as yaml]
             [cheshire.core :as json]
-            [clojure.pprint :refer [pprint]]
-            [taoensso.timbre.appenders.core :as appenders])
+            [clojure.pprint :refer [pprint]])
   (:gen-class))
 
 (set! *warn-on-reflection* 1)
@@ -25,7 +22,6 @@
 (defn gen-config [arg]
   (let [inputfile (:file arg)
         e (-> (get-file inputfile) (json/parse-string true))
-        _ (pprint e)
         c (g/generator e)
         _ (println  c)]))
     ; (print (str/join c))))
