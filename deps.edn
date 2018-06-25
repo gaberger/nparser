@@ -14,7 +14,7 @@
            http-kit                    {:mvn/version "2.3.0"}
            io.forward/yaml             {:mvn/version "1.0.8"}
            cli-matic                   {:mvn/version "0.1.11"}}
- :paths   ["src" "test" "resources" "dev"]
+ :paths   ["src"]
 
  :aliases {
            :1.8    {:override-deps {org.clojure/clojure {:mvn/version "1.8.0"}}}
@@ -25,9 +25,12 @@
            :socket {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
            :nrepl  {:extra-deps {org.clojure/tools.nrepl {:mvn/version "0.2.12"}}
                     :main-opts  ["-e" "(require,'[clojure.tools.nrepl.server,:refer,[start-server]]),(start-server,:port,5555)"]}
-           :rebl   {:extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.3"}}
+           :rebl   {:extra-paths   ["dev" "test"]
+                    :extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.3"}
+                                 spyscope {:mvn/version "0.1.6"}}
                     :main-opts  ["-m" "rebel-readline.main"]}
-           :test   {:extra-deps {eftest {:mvn/version "0.5.2"}}
+           :test   {:extra-paths   ["dev" "test"]
+                    :extra-deps {eftest {:mvn/version "0.5.2"}}
                     :main-opts  ["-e" "(require,'[eftest.runner,:refer,[find-tests,run-tests]]),(run-tests,(find-tests,\"test\"))"]}
            :native-image
                    {:extra-deps

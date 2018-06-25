@@ -5,7 +5,7 @@
             [nparser.frr.generator :refer [container] :as g]
             [nparser.frr.parser :refer :all]
             [nparser.utils :refer :all]
-            [nparser.frr.transforms.v1.core :refer :all]
+            [nparser.frr.transforms.v1.core :refer [transformer]]
             [taoensso.timbre :as timbre]
             [yaml.core :as yaml]
             [taoensso.timbre.appenders.core :as appenders])

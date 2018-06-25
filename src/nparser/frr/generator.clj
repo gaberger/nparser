@@ -1,6 +1,5 @@
 (ns nparser.frr.generator
-  (:require [com.rpl.specter :refer :all]
-            [com.rpl.specter.zipper :as SZ]
+  (:require 
             [clojure.zip :as zip]
             [clojure.walk :refer [prewalk]]
             [clojure.string :as str]
