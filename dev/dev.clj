@@ -6,14 +6,15 @@
     [clojure.reflect :refer [reflect]]
     [clojure.repl :refer [apropos dir doc find-doc pst source]]
     [clojure.test :refer [run-all-tests]]
-    [clojure.tools.namespace.repl :refer [refresh refresh-all]]))
+    [clojure.tools.namespace.repl :refer [refresh refresh-all]]
+    [nparser.frr.parser :refer [create-frr-parser]]
+    [nparser.frr.transforms.v2.core :refer [transformer]]
+    [nparser.frr.generator :refer [generator] :as g]
+    [nparser.utils :refer :all])) 
 
-;
-; (def configuration (get-github-file "master" {:path "frr/test/router1-test.cfg", :repo "network-config-store", :owner "gaberger"}))
-; (def grammar (get-github-file "master" {:path "parsers/frr/frr-new.ebnf", :repo "ncp_parser", :owner "gaberger"}))
-; (def parser (create-frr-parser grammar))
-; (def t (transformer (parser configuration)))
-
+(def configuration (get-file "./configs/frr/router1-test.cfg"))
+(def grammar (get-file "./parsers/frr/frr-new.ebnf"))
+(def parser (create-frr-parser grammar))
 
 ;(g/generator t
 ;      newconf (str/join @g/container))

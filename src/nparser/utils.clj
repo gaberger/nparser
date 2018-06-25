@@ -1,8 +1,8 @@
 (ns nparser.utils
   (:require [org.httpkit.client :as http]
             [clojure.string :as str]
-            [cheshire.core :refer :all]
-            [yaml.core :as yaml :exlude [load]]
+            [cheshire.core :as json]
+            [yaml.core :as yaml :exclude [load]]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :as appenders]))
 
@@ -20,7 +20,7 @@
     (let [{:keys [status headers body error] :as resp} @(http/get uri)]
       (if error
         false
-        (let [edn (into [] (parse-string body true))
+        (let [edn (into [] (json/parse-string body true))
               acc []]
           (reduce
             (fn [acc file]
@@ -38,6 +38,8 @@
         false
         body))))
 
+(defn edn->json [s]
+  (json/generate-string s {:pretty true}))
 
 (defn get-file [file]
   (->> (clojure.java.io/as-file file) slurp))
