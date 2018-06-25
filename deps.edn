@@ -18,10 +18,10 @@
 
  :aliases {
            :1.8    {:override-deps {org.clojure/clojure {:mvn/version "1.8.0"}}}
-           :1.9    {:override-deps {org.clojure/clojure {:mvn/version "1.9.0"}}}
+           :1.9    {:extra-deps {spyscope {:mvn/version "0.1.6"}}
+                    :override-deps {org.clojure/clojure {:mvn/version "1.9.0"}}}
            :master {:override-deps {org.clojure/clojure {:mvn/version "1.10.0-master-SNAPSHOT"}}}
            :bench  {:extra-deps {criterium {:mvn/version "0.4.4"}}}
-           :proto  {:extra-deps {proto-repl {:mvn/version "RELEASE"}}}
            :socket {:jvm-opts ["-Dclojure.server.repl={:port,5555,:accept,clojure.core.server/repl}"]}
            :nrepl  {:extra-deps {org.clojure/tools.nrepl {:mvn/version "0.2.12"}}
                     :main-opts  ["-e" "(require,'[clojure.tools.nrepl.server,:refer,[start-server]]),(start-server,:port,5555)"]}

@@ -1,10 +1,10 @@
 (ns nparser.frr.generator
-  (:require 
-            [clojure.zip :as zip]
-            [clojure.walk :refer [prewalk]]
-            [clojure.string :as str]
-            [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :as appenders]))
+  (:require
+    [clojure.zip :as zip]
+    [clojure.walk :refer [prewalk]]
+    [clojure.string :as str]
+    [taoensso.timbre :as timbre]
+    [taoensso.timbre.appenders.core :as appenders]))
 
 (set! *warn-on-reflection* 1)
 
@@ -79,28 +79,36 @@
   "")
 
 (defn two-element-vector? [node]
- (if (and (not (map? (first node)))
-          (= (count node) 2))
+  (if (and (not (map? (first node)))
+           (= (count node) 2))
+    true
+    false))
+
+(defn n-element-vector? [node]
+  (if (and (vector? (fnext node))
+           (> (count (fnext node)) 2))
     true
     false))
 
 (defn vector-handler! [node]
-  (debug "executing vector-handler " node)
-  (cond 
+  (debug "executing vector-handler "node)
+  (cond
+    (n-element-vector? node)  (assoc {} (first node) (into #{} (fnext node)))
     (two-element-vector? node) (let [[option value] node
-                                     option-string (name option)
-                                     (if (is-options-tag? option-string)
-                                      (let [fmt-option (subs (transpose-tag option-string) 1)]
-                                        (debug "adding option -->> " fmt-option value)
-                                        (cond
-                                          (boolean? value) (condp = value
-                                                             true (do (swap! container conj (str fmt-option \newline)) node)
-                                                             false (do (swap! container conj (str "no " fmt-option \newline)) node))
-                                          (number? value) (do (swap! container conj (str fmt-option value \newline)) [nil nil])))
-                                      node)])
+                                     option-string (name option)]
+                                 (if (is-options-tag? option-string)
+                                   (let [fmt-option (subs (transpose-tag option-string) 1)]
+                                     (debug "adding option -->> " fmt-option value)
+                                     (cond
+                                       (boolean? value) (condp = value
+                                                          true (do (swap! container conj (str fmt-option \newline)) node)
+                                                          false (do (swap! container conj (str "no " fmt-option \newline)) node))
+                                       (number? value) (do (swap! container conj (str fmt-option value \newline)) [nil nil])))
+                                   node))
+
     :default node))
-    ; (when (vector? (fnext node))
-    ;     (debug "Found a vector of something"))
+; (when (vector? (fnext node))
+;     (debug "Found a vector of something"))
 
 (defn map-handler! [node]
   (debug "executing map-handler " node)
@@ -145,9 +153,9 @@
 
 
 (defn generator [input]
-      (prewalk gen-config input)
-      (str/join @container))
-      
+  (prewalk gen-config input)
+  (str/join @container))
+
 
 ;(defn output_config []
 ;  (prewalk gen-config model)
