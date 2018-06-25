@@ -1,7 +1,7 @@
 (*This is the EBNF Grammar for FRR router*)
 
 
-configuration = name interfaces router ip-prefix-list ip-community-list ip-as-path-list route-map-list
+device = name interfaces router ip-prefix-list ip-community-list ip-as-path-list route-map-list
 (* ip-prefix-list ip-community-list *)
 
 name = <'hostname'> word

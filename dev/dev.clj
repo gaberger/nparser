@@ -7,10 +7,11 @@
     [nparser.frr.generator :refer [generator] :as g]
     [nparser.utils :refer :all])) 
 
-(def configurationv1 (get-file "./configs/frr/router1.cfg"))
-(def grammarv1 (get-file "./parsers/frr/frr.ebnf"))
+(def configurationv1 (get-file "./configs/frr/router1-test.cfg"))
+(def grammarv1 (get-file "./parsers/frr/frr-new.ebnf"))
 (def parserv1 (create-frr-parser grammarv1))
-(def t1 (nparser.frr.transforms.v1.core/transformer (parserv1 configurationv1)))
+(require '[nparser.frr.transforms.v1.core :refer [transformer]])
+; (def t1 (nparser.frr.transforms.v1.core/transformer (parserv1 configurationv1)))
 
 ;(g/generator t
 ;      newconf (str/join @g/container))

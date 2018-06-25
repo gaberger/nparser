@@ -59,9 +59,6 @@
         (debug "adding keyword -->> " tag)
         (swap! container conj tag)))))
 
-(defn vector-handler! [node]
-  (condp #(= (first %2) %1) node
-    :ip_address (println "found ip_address tag --> " (rest node))))
 
 (defn set-handler! [node]
   (debug "adding set -->> " node)
@@ -81,22 +78,29 @@
   (swap! container conj (str node \newline))
   "")
 
+(defn two-element-vector? [node]
+ (if (and (not (map? (first node)))
+          (= (count node) 2))
+    true
+    false))
+
 (defn vector-handler! [node]
   (debug "executing vector-handler " node)
-  (if (and (not (map? (first node)))
-           (= (count node) 2))
-    (let [[option value] node
-          option-string (name option)]
-      (if (is-options-tag? option-string)
-        (let [fmt-option (subs (transpose-tag option-string) 1)]
-          (debug "adding option -->> " fmt-option value)
-          (cond
-            (boolean? value) (condp = value
-                               true (do (swap! container conj (str fmt-option \newline)) node)
-                               false (do (swap! container conj (str "no " fmt-option \newline)) node))
-            (number? value) (do (swap! container conj (str fmt-option value \newline)) [nil nil])))
-        node))
-    node))
+  (cond 
+    (two-element-vector? node) (let [[option value] node
+                                     option-string (name option)
+                                     (if (is-options-tag? option-string)
+                                      (let [fmt-option (subs (transpose-tag option-string) 1)]
+                                        (debug "adding option -->> " fmt-option value)
+                                        (cond
+                                          (boolean? value) (condp = value
+                                                             true (do (swap! container conj (str fmt-option \newline)) node)
+                                                             false (do (swap! container conj (str "no " fmt-option \newline)) node))
+                                          (number? value) (do (swap! container conj (str fmt-option value \newline)) [nil nil])))
+                                      node)])
+    :default node))
+    ; (when (vector? (fnext node))
+    ;     (debug "Found a vector of something"))
 
 (defn map-handler! [node]
   (debug "executing map-handler " node)
@@ -140,9 +144,10 @@
     :else node))
 
 
-
 (defn generator [input]
-  (prewalk gen-config input))
+      (prewalk gen-config input)
+      (str/join @container))
+      
 
 ;(defn output_config []
 ;  (prewalk gen-config model)

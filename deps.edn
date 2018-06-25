@@ -29,9 +29,12 @@
                     :extra-deps {com.bhauman/rebel-readline {:mvn/version "0.1.3"}
                                  spyscope {:mvn/version "0.1.6"}}
                     :main-opts  ["-m" "rebel-readline.main"]}
-           :test   {:extra-paths   ["dev" "test"]
+           :testv1 {:extra-paths   ["dev" "test"]
                     :extra-deps {eftest {:mvn/version "0.5.2"}}
-                    :main-opts  ["-e" "(require,'[eftest.runner,:refer,[find-tests,run-tests]]),(run-tests,(find-tests,\"test\"))"]}
+                    :main-opts  ["-e" "(require,'[eftest.runner,:refer,[find-tests,run-tests]]),(run-tests,(find-tests,\"test/nparser/frr/v1\"))"]}
+           :testv2 {:extra-paths   ["dev" "test"]
+                    :extra-deps {eftest {:mvn/version "0.5.2"}}
+                    :main-opts  ["-e" "(require,'[eftest.runner,:refer,[find-tests,run-tests]]),(run-tests,(find-tests,\"test/nparser/frr/v2\"))"]}
            :native-image
                    {:extra-deps
                                {org.clojure/tools.cli        {:mvn/version "0.3.7"}

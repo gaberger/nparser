@@ -8,8 +8,8 @@
 
 
 (deftest test-parser
-  (let [configuration (u/get-file "./configs/frr/router1.cfg")
-        grammar (u/get-file "./parsers/frr/frr.ebnf")
+  (let [configuration (u/get-file "./configs/frr/router1-test.cfg")
+        grammar (u/get-file "./parsers/frr/frr-new.ebnf")
         parser (create-frr-parser grammar)
         t (transformer (parser configuration))]
 
@@ -25,8 +25,8 @@
              (select [:<device> ALL :<interfaces> ALL :interface :ip_address] t))))))
 
 (deftest test-mutations
-  (let [configuration (u/get-file "./configs/frr/router1.cfg")
-        grammar (u/get-file "./parsers/frr/frr.ebnf")
+  (let [configuration (u/get-file "./configs/frr/router1-test.cfg")
+        grammar (u/get-file "./parsers/frr/frr-new.ebnf")
         parser (create-frr-parser grammar)
         t (transformer (parser configuration))
         modified (sp/transform [:<device> ALL :<interfaces> ALL :interface (map-key :ip_address)] #(if (= :ip_address %) :prefix) t)

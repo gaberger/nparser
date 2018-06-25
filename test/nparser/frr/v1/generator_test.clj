@@ -11,8 +11,8 @@
 
 
 (deftest test-generator
-  (let [configuration (get-file "./configs/frr/router1.cfg")
-        grammar (get-file "./parsers/frr/frr.ebnf")
+  (let [configuration (get-file "./configs/frr/router1-test.cfg")
+        grammar (get-file "./parsers/frr/frr-new.ebnf")
         parser (create-frr-parser grammar)
         t (transformer (parser configuration))
         _ (g/generator t)
@@ -22,13 +22,13 @@
       (is (= (parser configuration)
              (parser newconf))))))
 
-; (deftest test-yaml-importer-export
-;   (let [configuration (get-file "./configs/frr/router1-test.cfg")
-;         grammar (get-file "./parsers/frr/frr-new.ebnf")
-;         parser (create-frr-parser grammar)
-;         t (transformer (parser configuration))
-;         ey (edn->yaml t)
-;         ye (yaml->edn ey)]
-;     (testing "Compare configs"
-;       (is (= t
-;              ye)))))
+(deftest test-yaml-importer-export
+  (let [configuration (get-file "./configs/frr/router1-test.cfg")
+        grammar (get-file "./parsers/frr/frr-new.ebnf")
+        parser (create-frr-parser grammar)
+        t (transformer (parser configuration))
+        ey (edn->yaml t)
+        ye (yaml->edn ey)]
+    (testing "Compare configs"
+      (is (= t
+             ye)))))
