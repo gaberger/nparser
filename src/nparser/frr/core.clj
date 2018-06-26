@@ -18,6 +18,8 @@
 ;(timbre/merge-config!
 ;  {:appenders {:spit (appenders/spit-appender {:fname (str/join [logfile ".log"])})}})
 
+(defn get-runtime [arg]
+  (println (System/getProperty "java.runtime.name")))
 
 (defn gen-config [arg]
   (let [inputfile (:file arg)
@@ -52,7 +54,7 @@
 
    :global-opts []
 
-   :commands    [ 
+   :commands    [
                   ; {:command     "gen-config"}
                   ; :description "Generate a config from a YAML input file"
                   ; :opts        [{:option "file" :as "YAML input file" :type :string}]
@@ -61,15 +63,19 @@
                  {:command     "to-yaml"
                   :description "Generate a YAML file from a config"
                   :opts        [{:option "file" :as "Config input file" :type :string}]
-                  :runs        gen-yaml}        
+                  :runs        gen-yaml}
                  {:command     "to-json"
                   :description "Generate JSON from a config"
                   :opts        [{:option "file" :as "Config input file" :type :string}]
-                  :runs        gen-json}    
+                  :runs        gen-json}
                  {:command     "to-config"
                   :description "Generate config from an input file"
                   :opts        [{:option "file" :as "JSON input file" :type :string}]
-                  :runs        gen-config}]})
+                  :runs        gen-config}
+                 {:command     "get-runtime"
+                  :opts        [{:option "get" :as "Get Runtime" :type :string}]
+                  :description "Get Runtime"
+                  :runs        get-runtime}]})
 
 
 (defn -main [& args]
