@@ -1,6 +1,6 @@
 (*This is the EBNF Grammar for FRR router*)
 
-device = frr service? hostname? interfaces router-id  router
+device = frr service? hostname? interfaces router-id  router vnc line
 
 frr = (<'frr'> frroptions)*
 frroptions = version | frrdefaults
@@ -27,12 +27,9 @@ ip_address = <'ip address'> prefix
 <router> = router_bgp
 
 (* router bgp *)
-router_bgp = routerbgp (bgpflags | bgplist | neighbors)
+router_bgp = routerbgp bgplist neighbors afiu
 <routerbgp> = <'router bgp'> asn
 asn = number
-
-<bgpflags> =  synchronization
-synchronization = bool? <'synchronization'>
 
 bgplist = (<'bgp'> bgp)*
 bgp = medoptions | bestpath | confederation
@@ -69,14 +66,37 @@ peer-group = <'peer-group'> word
 send-community = <'send-community'> word
 update-source = <'update-source'> address
 advertisement-interval = <'advertisement-interval'> number
-
 route-map = (<'route-map'> map)
 map = (routemap direction)*
 <routemap> = word
 
+(* address-family *)
 
-address-family_ipv4_unicast = <'address-family ipv4 unicast'> 
+afiu = (address-family afheader /  afneighbors exit-address-family)*
+afheader = afi4 | afi6
+afi4 = 'ipv4 unicast'
+afi6 = 'ipv6 unicast'
+afneighbors = ('neighbor' afneighboroptions)*
+afneighboroptions = (afneighbor afiuoptions)*
+afneighbor = word
+address-family = 'address-family'
 
+afiuoptions =  addpath-tx-all-paths | soft-reconfiguration
+addpath-tx-all-paths = 'addpath-tx-all-paths'
+soft-reconfiguration = <'soft-reconfiguration'> inbound?
+inbound = 'inbound'
+exit-address-family = 'exit-address-family'
+
+(* vnc *)
+vnc = 'vnc' vncdefaults vncoptions exitvnc
+vncdefaults = 'defaults'
+vncoptions = response-lifetime number
+response-lifetime = 'response-lifetime'
+exitvnc = 'exit-vnc'
+
+
+(* line *)
+line = 'line vty'
 
 (* Primitives *)
 <direction> = in | out
@@ -98,3 +118,4 @@ gt = <'gt'> number
 <word> = #'[a-zA-Z0-9()\\.,-^?_|]+'
 <number> = #'[0-9]+'
 <doublequote> = #"\""
+
