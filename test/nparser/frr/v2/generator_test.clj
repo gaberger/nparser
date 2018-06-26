@@ -12,7 +12,7 @@
 
 (deftest test-generator
   (let [configuration (get-file "./configs/frr/router1-test.cfg")
-        grammar (get-file "./parsers/frr/frr-new.ebnf")
+        grammar (get-file "./parsers/frr/v1/frr-new.ebnf")
         parser (create-frr-parser grammar)
         t (transformer (parser configuration))
         _ (g/generator t)

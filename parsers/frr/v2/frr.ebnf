@@ -1,13 +1,23 @@
 (*This is the EBNF Grammar for FRR router*)
 
-device = hostname interfaces router
+device = frr service? hostname? interfaces router-id  router
+
+frr = (<'frr'> frroptions)*
+frroptions = version | frrdefaults
+<version> = <'version'> frr-version
+<frr-version> = #"\d+\.\d+\.\d+"
+<frrdefaults> = 'defaults traditional' | 'defaults datacenter'
+
+service = ('service' serviceoptions)*
+serviceoptions = ivc
+ivc = 'integrated-vtysh-config'
 
 hostname = <'hostname'> word
 
 (* interface section *)
 interfaces = interface*
-interface = <'interface'> name ip_address
-
+interface = <'interface'> name | description | ip_address?
+description = <'description'> (doublequote word+ doublequote)
 interface-name = <'interface'> word
 name = word
 ip_address = <'ip address'> prefix
@@ -17,7 +27,7 @@ ip_address = <'ip address'> prefix
 <router> = router_bgp
 
 (* router bgp *)
-router_bgp = routerbgp bgpflags bgplist neighbors
+router_bgp = routerbgp (bgpflags | bgplist | neighbors)
 <routerbgp> = <'router bgp'> asn
 asn = number
 
@@ -25,7 +35,7 @@ asn = number
 synchronization = bool? <'synchronization'>
 
 bgplist = (<'bgp'> bgp)*
-bgp = router-id | medoptions | bestpath | confederation
+bgp = medoptions | bestpath | confederation
 
 router-id = <'router-id'> address
 <medoptions> = always-compare-med | deterministic-med
@@ -47,19 +57,26 @@ identifier = <'identifier'> number
 (* neighbors *)
 
 neighbors = (<'neighbor'> neighbor)*
-neighbor = naddr
+neighbor = naddr | neighborpeers
+neighborpeers = word 'peer-group'
 naddr = (address neighboroptions)*
 <neighboroptions> = neighborattrs | neighborvalues
 <neighborvalues> = next-hop-self
 next-hop-self = 'next-hop-self'
-<neighborattrs> = remote-as | send-community | advertisement-interval | route-map
+<neighborattrs> = remote-as | peer-group | update-source | send-community | advertisement-interval | route-map
 remote-as = <'remote-as'> number
+peer-group = <'peer-group'> word
 send-community = <'send-community'> word
+update-source = <'update-source'> address
 advertisement-interval = <'advertisement-interval'> number
 
 route-map = (<'route-map'> map)
 map = (routemap direction)*
 <routemap> = word
+
+
+address-family_ipv4_unicast = <'address-family ipv4 unicast'> 
+
 
 (* Primitives *)
 <direction> = in | out
@@ -80,3 +97,4 @@ gt = <'gt'> number
 <token> = word | number
 <word> = #'[a-zA-Z0-9()\\.,-^?_|]+'
 <number> = #'[0-9]+'
+<doublequote> = #"\""

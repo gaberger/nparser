@@ -9,7 +9,7 @@
 
 (deftest test-parser
   (let [configuration (u/get-file "./configs/frr/router1-test.cfg")
-        grammar (u/get-file "./parsers/frr/frr-new.ebnf")
+        grammar (u/get-file "./parsers/frr/v1/frr-new.ebnf")
         parser (create-frr-parser grammar)
         t (transformer (parser configuration))]
 
