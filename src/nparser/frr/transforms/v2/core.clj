@@ -1,50 +1,151 @@
 (ns nparser.frr.transforms.v2.core
   (:require [clojure.string :as str]
-            [instaparse.core :as insta :refer [transform]]))
+            [instaparse.core :as insta :refer [transform]]
+            [spyscope.core :refer :all]))
+
+
 
 (defn av
   [args]
   (let [[a v] args]
-    (conj [] (keyword a) v)))
+    (assoc {} (keyword a) v)))
+
+(defn eavl
+  "Take keyword as entity and collection as args and return args as vector to key"
+  [e args]
+  (assoc {} e (into []  args)))
+
+(defn eavt
+  "Take keyword as entity and text element as args"
+  [e args]
+  (assoc {} e args))
 
 (defn eav
   "Take keyword as entity and collection as args and return args as is"
-  [e & args]
-  (conj [] e (into [] (first args))))
+  [e args]
+  (assoc {} e (first args)))
 
 (defn chtobool [k args]
   (let [attr (str/replace (first args) #" " "_")
         kton (name k)
         ntok (keyword (str "+" kton))]
     (cond
-      (= attr "no") (conj [] ntok false)
-      (= attr kton) (conj [] ntok true)
+      (= attr "no") (assoc {} ntok false)
+      (= attr kton) (assoc {} ntok true)
       :default args)))
 
 (defn transformer [input]
   (transform
-    {:asn                    #(conj [] :<asn> (clojure.edn/read-string %))
-     :remote-as              #(conj [] :remote-as (clojure.edn/read-string %))
-     :identifier             #(conj [] :identifier (clojure.edn/read-string %))
-     :ip_address             (comp #(conj [] :ip_address %) str)
+    {:asn                    (fn asn [arg]
+                               (assoc {} :<asn> (clojure.edn/read-string arg)))
+     :ip_address             (comp #(conj [] :ip_address  %) str)
+     :description            (fn e [& arg] (eavt :description  (str/join #" " (into [] arg))))
      :name                   (comp #(conj [] :<name> %) str)
-     :peers                  (fn peers [& arg]
-                               (conj [] :peers (conj (into (sorted-set) arg))))
-     :bgplist                (fn m [& args] (eav :<bgplist> args))
-     :neighbors              (fn m [& args] (eav :<neighbors> args))
-     :interfaces             (fn m [& args] (eav :<interfaces> args))
-     :device                 (fn m [& args] (eav :<device> args))
-     :synchronization        (fn m [& args] (chtobool :synchronization args))
-     :always-compare-med     (fn m [& args] (chtobool :always-compare-med args))
-     :deterministic-med      (fn m [& args] (chtobool :deterministic-med args))
-     :compare-routerid       (fn m [& args] (chtobool :compare-routerid args))
-     :as-path_confed         (fn m [& args] (chtobool :as-path_confed args))
-     :next-hop-self          (fn m [& args] (chtobool :next-hop-self args))
-     :map                    (fn m [& args] (av args))
-     :naddr                  (fn m [& args] (av args))}
+     :interface              (fn interfaces [& arg]
+                               (assoc {} :interface
+                                         (reduce conj {} arg)))
+     ; :bgplist                (fn bgplist [& arg] (assoc {} :<bgplist> (into [] arg)))
+     ; :bgp                    (fn bgp [& arg]
+     ;                           (assoc {} :bgp
+     ;                                     (reduce conj {} arg)))
+     ; ; :bestpath               (fn bestpath [& arg]
+     ; ;                           (assoc {} :bestpath
+     ; ;                                     (reduce conj {} arg)))
+     ; :synchronization        (fn sync [& args] (chtobool :synchronization args))
+     ; :always-compare-med     (fn sync [& args] (chtobool :always-compare-med args))
+     ; :deterministic-med      (fn sync [& args] (chtobool :deterministic-med args))
+     ; :compare-routerid       (fn sync [& args] (chtobool :compare-routerid args))
+     ; :as-path_confed         (fn sync [& args] (chtobool :as-path_confed args))
+     ; :peers                  (fn peers [& arg]
+     ;                           (assoc {} :peers (conj (into (sorted-set) arg))))
+     ; :map                    (fn m [& args] (av args))
+     ; :route-map              #(assoc {} :route-map %)
+     ; :remote-as              #(assoc {} :remote-as (clojure.edn/read-string %))
+     ; :send-community         #(assoc {} :send-community %)
+     ; :advertisement-interval #(assoc {} :advertisement-interval %)
+     ; :next-hop-self          (fn b [& args] (chtobool :next-hop-self args))
+     :naddr                  (fn m [& args] (av args))
+     :npeer                  (fn m [& args] (av args))
+     ; :hostname               (fn m [& args] (eav :hostname args))
+     :router_bgp             (fn m [& args] (eavl :router_bgp args))
+     ; :neighbor               (fn m [& args] (eav :neighbor args))
+     :neighbors              (fn m [& args] (eavl :<neighbors> args))
+     ; :neighbor                (fn s [& arg]
+     ;                              (assoc {} :neighbor (reduce conj {} arg)))
+     ; :address-family          (fn s [& arg]
+     ;                              (assoc {} :address-family (reduce conj {} arg)))
+     ; :service                (fn s [& arg]
+     ;                              (assoc {} :service (reduce conj {} arg)))
+     :interfaces             (fn m [& args] (eavl :<interfaces> args))
+     :device                 (fn m [& args] (eavl :<device> args))}
+     ; :afiu                   (fn m [& args] (eavl :<afiu> args))}
+     ; :identifier             (fn asn [arg]
+     ;                           (assoc {} :identifier (clojure.edn/read-string arg)))}
     input))
 
 
+; (defn av
+;   [args]
+;   (let [[a v] args]
+;     (assoc {} (keyword a) v)))
 
-    
+; (defn eavl
+;   "Take keyword as entity and collection as args and return args as vector to key"
+;   [e args]
+;   (assoc {} e (into [] args)))
 
+; (defn eav
+;   "Take keyword as entity and collection as args and return args as is"
+;   [e args]
+;   (assoc {} e (first args)))
+
+; (defn chtobool [k args]
+;   (let [attr (str/replace (first args) #" " "_")
+;         kton (name k)
+;         ntok (keyword (str "+" kton))]
+;     (cond
+;       (= attr "no") (assoc {} ntok false)
+;       (= attr kton) (assoc {} ntok true)
+;       :default args)))
+
+
+
+; (defn transformer [input]
+;   (transform
+;     {:asn                    (fn asn [arg]
+;                                (assoc {} :<asn> (clojure.edn/read-string arg)))
+;      :ip_address             (comp #(conj [] :ip_address %) str)
+;      :name                   (comp #(conj [] :<name> %) str)
+;      :interface              (fn interfaces [& arg]
+;                                (assoc {} :interface
+;                                          (reduce conj {} arg)))
+;      :bgplist                (fn bgplist [& arg] (assoc {} :<bgplist> (into [] arg)))
+;      :bestpath               (fn bestpath [& arg]
+;                                (assoc {} :bestpath
+;                                          (reduce conj {} arg)))
+;      :synchronization        (fn sync [& args] (chtobool :synchronization args))
+;      :always-compare-med     (fn sync [& args] (chtobool :always-compare-med args))
+;      :deterministic-med      (fn sync [& args] (chtobool :deterministic-med args))
+;      :compare-routerid       (fn sync [& args] (chtobool :compare-routerid args))
+;      :as-path_confed         (fn sync [& args] (chtobool :as-path_confed args))
+;      :map                    (fn m [& args] (av args))
+;      :route-map              #(assoc {} :route-map %)
+;      :remote-as              #(assoc {} :remote-as (clojure.edn/read-string %))
+;      :send-community         #(assoc {} :send-community %)
+;      :advertisement-interval #(assoc {} :advertisement-interval %)
+;      :next-hop-self          #(assoc {} :+next-hop-self true)
+;      :naddr                  (fn m [& args] (av args))
+;      :hostname               (fn m [& args] (eav :hostname args))
+;      :router_bgp             (fn m [& args] (eavl :router_bgp args))
+;      :neighbor               (fn m [& args] (eav :neighbor args))
+;      :neighbors              (fn m [& args] (eavl :<neighbors> args))
+;      :interfaces             (fn m [& args] (eavl :<interfaces> args))
+;      :device                 (fn m [& args] (eavl :<device> args))
+;      :bgp                    (fn bgp [& arg]
+;                                (assoc {} :bgp
+;                                          (reduce conj {} arg)))
+;      :peers                  (fn peers [& arg]
+;                                (assoc {} :peers (conj (into (sorted-set) arg))))
+;      :identifier             (fn asn [arg]
+;                                (assoc {} :identifier (clojure.edn/read-string arg)))}
+;     input))

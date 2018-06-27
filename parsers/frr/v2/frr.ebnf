@@ -72,20 +72,20 @@ map = (routemap direction)*
 
 (* address-family *)
 
-afiu = (address-family afheader /  afneighbors exit-address-family)*
-afheader = afi4 | afi6
-afi4 = 'ipv4 unicast'
-afi6 = 'ipv6 unicast'
-afneighbors = ('neighbor' afneighboroptions)*
-afneighboroptions = (afneighbor afiuoptions)*
-afneighbor = word
-address-family = 'address-family'
+afiu = (address-family afheader afneighbors exit-address-family)*
+<afheader> = afi4 | afi6
+<afi4> = 'ipv4 unicast'
+<afi6> = 'ipv6 unicast'
 
-afiuoptions =  addpath-tx-all-paths | soft-reconfiguration
-addpath-tx-all-paths = 'addpath-tx-all-paths'
+<afneighbors> = ('neighbor'> afneighbor afoptions)*
+<afoptions> =  addpath-tx-all-paths | soft-reconfiguration
+<afneighbor> = word
+address-family = <'address-family'>
+
+<addpath-tx-all-paths> = 'addpath-tx-all-paths'
 soft-reconfiguration = <'soft-reconfiguration'> inbound?
-inbound = 'inbound'
-exit-address-family = 'exit-address-family'
+<inbound> = 'inbound'
+<exit-address-family> = 'exit-address-family'
 
 (* vnc *)
 vnc = 'vnc' vncdefaults vncoptions exitvnc
@@ -118,4 +118,3 @@ gt = <'gt'> number
 <word> = #'[a-zA-Z0-9()\\.,-^?_|]+'
 <number> = #'[0-9]+'
 <doublequote> = #"\""
-
