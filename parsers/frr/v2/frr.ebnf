@@ -8,16 +8,15 @@ frroptions = version | frrdefaults
 <frr-version> = #"\d+\.\d+\.\d+"
 <frrdefaults> = 'defaults traditional' | 'defaults datacenter'
 
-service = ('service' serviceoptions)*
-serviceoptions = ivc
-ivc = 'integrated-vtysh-config'
+service = (<'service'> serviceoptions)*
+serviceoptions = 'integrated-vtysh-config'
 
 hostname = <'hostname'> word
 
 (* interface section *)
 interfaces = interface*
-interface = <'interface'> name | description | ip_address?
-description = <'description'> (doublequote word+ doublequote)
+interface = <'interface'> name  description?  ip_address?
+description = <'description'> (<doublequote> word+ <doublequote>)
 interface-name = <'interface'> word
 name = word
 ip_address = <'ip address'> prefix
@@ -77,7 +76,7 @@ afiu = (address-family afheader afneighbors exit-address-family)*
 <afi4> = 'ipv4 unicast'
 <afi6> = 'ipv6 unicast'
 
-<afneighbors> = ('neighbor'> afneighbor afoptions)*
+<afneighbors> = (<'neighbor'> afneighbor afoptions)*
 <afoptions> =  addpath-tx-all-paths | soft-reconfiguration
 <afneighbor> = word
 address-family = <'address-family'>
