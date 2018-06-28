@@ -26,7 +26,7 @@ ip_address = <'ip address'> prefix
 <router> = router_bgp
 
 (* router bgp *)
-router_bgp = routerbgp bgplist neighbors afiu
+router_bgp = routerbgp bgplist? neighbors afiu
 <routerbgp> = <'router bgp'> asn
 asn = number
 
@@ -53,8 +53,9 @@ identifier = <'identifier'> number
 (* neighbors *)
 
 neighbors = (<'neighbor'> neighbor)*
-neighbor = naddr | neighborpeers
-neighborpeers = word 'peer-group'
+neighbor = naddr | npeers
+npeers = word npeeroptions
+<npeeroptions> = 'peer-group'
 naddr = (address neighboroptions)*
 <neighboroptions> = neighborattrs | neighborvalues
 <neighborvalues> = next-hop-self
@@ -70,32 +71,28 @@ map = (routemap direction)*
 <routemap> = word
 
 (* address-family *)
-
-afiu = (address-family afheader afneighbors exit-address-family)*
-<afheader> = afi4 | afi6
-<afi4> = 'ipv4 unicast'
-<afi6> = 'ipv6 unicast'
-
-<afneighbors> = (<'neighbor'> afneighbor afoptions)*
-<afoptions> =  addpath-tx-all-paths | soft-reconfiguration
-<afneighbor> = word
-address-family = <'address-family'>
-
-<addpath-tx-all-paths> = 'addpath-tx-all-paths'
-soft-reconfiguration = <'soft-reconfiguration'> inbound?
-<inbound> = 'inbound'
+afiu = (address-family  afneighbors* <exit-address-family>)*
+address-family = (<'address-family'> afoptions)
+<afoptions> = 'ipv4 unicast' | 'ipv6 unicast'
+afneighbors =  afneighbor*
+afneighbor = <'neighbor'> npeer noptions
+npeer = word
+<noptions> = addpath-tx-all-paths / soft-reconfiguration_inbound
+addpath-tx-all-paths = 'addpath-tx-all-paths'
+soft-reconfiguration_inbound = 'soft-reconfiguration inbound'
 <exit-address-family> = 'exit-address-family'
+
 
 (* vnc *)
 vnc = 'vnc' vncdefaults vncoptions exitvnc
 vncdefaults = 'defaults'
-vncoptions = response-lifetime number
-response-lifetime = 'response-lifetime'
+vncoptions = response-lifetime
+response-lifetime = <'response-lifetime'> number
 exitvnc = 'exit-vnc'
 
 
 (* line *)
-line = 'line vty'
+line = <'line'> 'vty'
 
 (* Primitives *)
 <direction> = in | out

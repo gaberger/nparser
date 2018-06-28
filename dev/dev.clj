@@ -14,8 +14,9 @@
 ; (def t (nparser.frr.transforms.v1.core/transformer (parser1 configuration1)))
 
 (def configuration (get-file "./configs/frr/frr.conf"))
+
 (def grammar (get-file "./parsers/frr/v2/frr.ebnf"))
 (def parser (create-frr-parser grammar))
-; (def t (nparser.frr.transforms.v2.core/transformer (parser configuration)))
+(def t (nparser.frr.transforms.v2.core/transformer (parser configuration)))
 
       ; t (transformer (parser configuration))
