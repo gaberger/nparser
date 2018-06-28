@@ -15,6 +15,19 @@
      comment = '!'"
     :auto-whitespace whitespace))
 
+
+; (def whitespace-or-comments
+;   (insta/parser
+;     "ws-or-comment = #'\\s+' | comment | frrhead
+;      comment = '!'
+;      frrhead = (<'frr'> frr)*
+;      frr = version | (defaults_traditional | defaults_datacenter)
+;      version = <'version'> frr-version
+;      frr-version = #'\\d\\.\\d\\.\\d'
+;      defaults_traditional = 'defaults traditional' 
+;      defaults_datacenter = 'defaults datacenter'"
+;     :auto-whitespace whitespace))
+
 (defn create-frr-parser [grammar]
   (parser
     grammar

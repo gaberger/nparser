@@ -1,9 +1,6 @@
 (ns nparser.frr.transforms.v2.core
   (:require [clojure.string :as str]
-            [instaparse.core :as insta :refer [transform]]
-            [spyscope.core :refer :all]))
-
-
+            [instaparse.core :as insta :refer [transform]]))
 
 (defn av
   [args]
@@ -41,11 +38,12 @@
      :remote-as              (fn asn [arg]
                                (assoc {} :remote-as (clojure.edn/read-string arg)))
      :ip_address             (comp #(conj [] :ip_address  %) str)
-     :description            (fn e [& arg] (eavt :description  (str/join #" " (into [] arg))))
+     :description            (fn e [& arg] (eavt :description  (pr-str (str/join #" " (into [] arg)))))
      :name                   (comp #(conj [] :<name> %) str)
      :interface              (fn interfaces [& arg]
                                (assoc {} :interface
                                          (reduce conj {} arg)))    
+     
      ; :bgplist                (fn bgplist [& arg] (assoc {} :<bgplist> (into [] arg)))
      ; :bgp                    (fn bgp [& arg]
      ;                           (assoc {} :bgp
@@ -70,10 +68,13 @@
      :npeer                  (fn m [& args] (av args))
      :afnpeer                  (fn m [& args] (av args))
      ; :afnpeer                  (fn m [& args] (av args))
+     :line                   (fn m [arg] (eavt :line arg))
      :address-family         (fn m [arg] (eavt :address-family arg))
      :router-id              (fn m [arg] (eavt :router-id arg))
      :service                (fn m [arg] (eavt :service arg))
-     :frrhead                (fn m [& args] (eavt :<frrhead> args))
+     :frrhead                (fn m [& args] (eavl :<frrhead> args))
+     :frr                   (fn m [args] (eavt :<frr> args))
+
      :frrdefaults           (fn m [arg] (eavt :<frrdefaults> arg))
      :exitvnc               (fn m [arg] (eavt :<exitvnc> arg))
      :exit-address-family   (fn m [arg] (eavt :<exit-address-family> arg))
@@ -92,6 +93,7 @@
      ; :service                (fn s [& arg]
      ;                              (assoc {} :service (reduce conj {} arg)))
      :interfaces             (fn m [& args] (eavl :<interfaces> args))
+     :vnc                    (fn m [& args] (eavl :vnc args))
      :device                 (fn m [& args] (eavl :<device> args))}
      ; :afiu                   (fn m [& args] (eavl :<afiu> args))}
      ; :identifier             (fn asn [arg]
