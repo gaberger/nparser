@@ -38,12 +38,14 @@
   (transform
     {:asn                    (fn asn [arg]
                                (assoc {} :<asn> (clojure.edn/read-string arg)))
+     :remote-as              (fn asn [arg]
+                               (assoc {} :remote-as (clojure.edn/read-string arg)))
      :ip_address             (comp #(conj [] :ip_address  %) str)
      :description            (fn e [& arg] (eavt :description  (str/join #" " (into [] arg))))
      :name                   (comp #(conj [] :<name> %) str)
      :interface              (fn interfaces [& arg]
                                (assoc {} :interface
-                                         (reduce conj {} arg)))
+                                         (reduce conj {} arg)))    
      ; :bgplist                (fn bgplist [& arg] (assoc {} :<bgplist> (into [] arg)))
      ; :bgp                    (fn bgp [& arg]
      ;                           (assoc {} :bgp
@@ -66,12 +68,25 @@
      ; :next-hop-self          (fn b [& args] (chtobool :next-hop-self args))
      :naddr                  (fn m [& args] (av args))
      :npeer                  (fn m [& args] (av args))
+     :afnpeer                  (fn m [& args] (av args))
+     ; :afnpeer                  (fn m [& args] (av args))
+     :address-family         (fn m [arg] (eavt :address-family arg))
+     :router-id              (fn m [arg] (eavt :router-id arg))
+     :service                (fn m [arg] (eavt :service arg))
+     :frrhead                (fn m [& args] (eavt :<frrhead> args))
+     :frrdefaults           (fn m [arg] (eavt :<frrdefaults> arg))
+     :exitvnc               (fn m [arg] (eavt :<exitvnc> arg))
+     :exit-address-family   (fn m [arg] (eavt :<exit-address-family> arg))
+     :vncdefaults           (fn m [arg] (eavt :<vncdefaults> arg))
      ; :hostname               (fn m [& args] (eav :hostname args))
      :router_bgp             (fn m [& args] (eavl :router_bgp args))
+     :afiu                   (fn m [& args] (eavl :<afiu> args))
+     :afneighbor             (fn m [& args] (eavt :neighbor (first args)))
+     :afneighbors             (fn m [& args] (eavl :<afneighbors> args))
      ; :neighbor               (fn m [& args] (eav :neighbor args))
      :neighbors              (fn m [& args] (eavl :<neighbors> args))
-     ; :neighbor                (fn s [& arg]
-     ;                              (assoc {} :neighbor (reduce conj {} arg)))
+     :neighbor                (fn s [& arg]
+                                  (assoc {} :neighbor (reduce conj {} arg)))
      ; :address-family          (fn s [& arg]
      ;                              (assoc {} :address-family (reduce conj {} arg)))
      ; :service                (fn s [& arg]

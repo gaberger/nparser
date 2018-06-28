@@ -1,15 +1,18 @@
 (*This is the EBNF Grammar for FRR router*)
 
-device = frr service? hostname? interfaces router-id  router vnc line
+device = frrhead service? hostname? interfaces router-id  router vnc line
 
-frr = (<'frr'> frroptions)*
-frroptions = version | frrdefaults
-<version> = <'version'> frr-version
+(* frr *)
+
+frrhead = (<'frr'> frr)*
+frr = version | (defaults_traditional | defaults_datacenter)
+version = <'version'> frr-version
 <frr-version> = #"\d+\.\d+\.\d+"
-<frrdefaults> = 'defaults traditional' | 'defaults datacenter'
+<defaults_traditional> = 'defaults traditional' 
+<defaults_datacenter> = 'defaults datacenter'
 
 service = (<'service'> serviceoptions)*
-serviceoptions = 'integrated-vtysh-config'
+<serviceoptions> = 'integrated-vtysh-config'
 
 hostname = <'hostname'> word
 
@@ -53,8 +56,8 @@ identifier = <'identifier'> number
 (* neighbors *)
 
 neighbors = (<'neighbor'> neighbor)*
-neighbor = naddr | npeers
-npeers = word npeeroptions
+neighbor = naddr | npeer
+npeer = word npeeroptions
 <npeeroptions> = 'peer-group'
 naddr = (address neighboroptions)*
 <neighboroptions> = neighborattrs | neighborvalues
@@ -71,22 +74,22 @@ map = (routemap direction)*
 <routemap> = word
 
 (* address-family *)
-afiu = (address-family  afneighbors* <exit-address-family>)*
+afiu = (address-family  afneighbors* exit-address-family)*
 address-family = (<'address-family'> afoptions)
 <afoptions> = 'ipv4 unicast' | 'ipv6 unicast'
 afneighbors =  afneighbor*
-afneighbor = <'neighbor'> npeer noptions
-npeer = word
+afneighbor = (<'neighbor'> afnpeer)
+afnpeer = (word noptions)
 <noptions> = addpath-tx-all-paths / soft-reconfiguration_inbound
-addpath-tx-all-paths = 'addpath-tx-all-paths'
-soft-reconfiguration_inbound = 'soft-reconfiguration inbound'
-<exit-address-family> = 'exit-address-family'
+<addpath-tx-all-paths> = 'addpath-tx-all-paths'
+<soft-reconfiguration_inbound> = 'soft-reconfiguration inbound'
+exit-address-family = 'exit-address-family'
 
 
 (* vnc *)
-vnc = 'vnc' vncdefaults vncoptions exitvnc
+vnc = <'vnc'> vncdefaults vncoptions exitvnc
 vncdefaults = 'defaults'
-vncoptions = response-lifetime
+<vncoptions> = response-lifetime
 response-lifetime = <'response-lifetime'> number
 exitvnc = 'exit-vnc'
 
