@@ -41,7 +41,7 @@
                                 db/driver                    {:local/root "/mnt/jamastore1/WIP/cambada/target/cambada-1.0.0-SNAPSHOT.jar"}}
                     :main-opts ["-m" "cambada.native-image"
                                 "--graalvm-home" "/mnt/jamastore1/runtime/graalvm-ce-1.0.0-rc2"
-                                "-m" "nparser.frr.core"]}
+                                "-m" "nparser.core"]}
 
            :uberjar
                    {:extra-deps

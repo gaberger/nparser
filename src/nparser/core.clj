@@ -29,13 +29,13 @@
         _ (println  c)]))
     ; (print (str/join c))))
 
-(defn gen-yaml [arg]
-  (let [configuration (get-file (:file arg))
-        grammar (get-file "./parsers/frr/v2/frr-new.ebnf")
-        parser (create-parser grammar)
-        t (transformer (parser configuration))
-        z (yaml/generate-string t :dumper-options {:flow-style :block})]
-      (println (str z))))
+; (defn gen-yaml [arg]
+;   (let [configuration (get-file (:file arg))
+;         grammar (get-file "./parsers/frr/v2/frr-new.ebnf")
+;         parser (create-parser grammar)
+;         t (transformer (parser configuration))
+;         z (yaml/generate-string t :dumper-options {:flow-style :block})]
+;       (println (str z))))
         ; (yaml/generate-string t)))
 
 (defn gen-json [arg]
