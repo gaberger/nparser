@@ -1,19 +1,19 @@
 (ns nparser.frr.v2.generator-test
   (:require [clojure.test :refer :all]
             [com.rpl.specter :refer [ALL transform map-key select]]
-            [nparser.frr.parser :refer [create-frr-parser]]
-            [nparser.frr.spec :refer :all]
+            [nparser.parser :refer [create-parser]]
+            [nparser.frr.specs.v1.spec :refer :all]
             [nparser.frr.transforms.v2.core :refer [transformer]]
-            [nparser.frr.generator :as g]
+            [nparser.generator :as g]
             [nparser.utils :refer :all]
-            [yaml.core :as yaml]
+            ; [yaml.core :as yaml]
             [clojure.string :as str]))
 
 
 (deftest test-generator
   (let [configuration (get-file "./configs/frr/topo-evpn/frr.conf")
         grammar (get-file "./parsers/frr/v2/frr.ebnf")
-        parser (create-frr-parser grammar)
+        parser (create-parser grammar)
         t (transformer (parser configuration))
         newconf (g/generator t)
         _ (reset! g/container [])]

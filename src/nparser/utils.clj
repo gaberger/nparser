@@ -3,7 +3,7 @@
             ;[org.httpkit.client :as http]
             [clojure.string :as str]
             [cheshire.core :as json]
-            [yaml.core :as yaml :exclude [load]]
+            ; [yaml.core :as yaml :exclude [load]]
             [taoensso.timbre :as timbre]
             [taoensso.timbre.appenders.core :as appenders]))
 
@@ -45,11 +45,11 @@
 (defn get-file [file]
   (->> (clojure.java.io/as-file file) slurp))
 
-(defn edn->yaml [input]
-  (yaml/generate-string input))
+; (defn edn->yaml [input]
+;   (yaml/generate-string input))
 
-(defn yaml->edn [input]
-  (yaml/parse-string input))
+; (defn yaml->edn [input]
+;   (yaml/parse-string input))
 
-(defn get-yaml-config [file]
-  (yaml/parse-string (get-file file)))
+; (defn get-yaml-config [file]
+;   (yaml/parse-string (get-file file)))

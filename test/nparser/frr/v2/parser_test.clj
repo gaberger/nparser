@@ -1,8 +1,8 @@
 (ns nparser.frr.v2.parser-test
   (:require [clojure.test :refer :all]
             [com.rpl.specter :refer [ALL map-key select transform] :as sp]
-            [nparser.frr.parser :refer [create-frr-parser]]
-            [nparser.frr.spec :refer :all]
+            [nparser.parser :refer [create-parser]]
+            [nparser.frr.specs.v1.spec :refer :all]
             [nparser.frr.transforms.v2.core :refer [transformer]]
             [nparser.utils :as u]))
 
@@ -10,7 +10,7 @@
 (deftest test-parser
   (let [configuration (u/get-file "./configs/frr/topo-evpn/frr.conf")
         grammar (u/get-file "./parsers/frr/v2/frr.ebnf")
-        parser (create-frr-parser grammar)
+        parser (create-parser grammar)
         t (transformer (parser configuration))]
 
 

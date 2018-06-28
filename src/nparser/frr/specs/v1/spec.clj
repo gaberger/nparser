@@ -1,4 +1,4 @@
-(ns nparser.frr.spec
+(ns nparser.frr.specs.v1.spec
    (:require [clojure.spec.alpha :as s]
              [clojure.spec.gen.alpha :as sgen]
              [clojure.java.io :as io]
