@@ -5,7 +5,8 @@
             [cheshire.core :as json]
             ; [yaml.core :as yaml :exclude [load]]
             [taoensso.timbre :as timbre]
-            [taoensso.timbre.appenders.core :as appenders]))
+            [taoensso.timbre.appenders.core :as appenders])
+  (:import java.lang.IllegalArgumentException))
 
 (set! *warn-on-reflection* 1)
 
@@ -43,7 +44,12 @@
   (json/generate-string s {:pretty true}))
 
 (defn get-file [file]
-  (->> (clojure.java.io/as-file file) slurp))
+  (try 
+    (->> (clojure.java.io/as-file file) slurp)
+    (catch Exception e 
+      (do 
+        (println (.getMessage e))
+        (System/exit 1)))))
 
 ; (defn edn->yaml [input]
 ;   (yaml/generate-string input))
