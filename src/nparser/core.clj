@@ -55,7 +55,7 @@
 (def CONFIGURATION
   {:app         {:command     "nparser"
                  :description "A command-line configuration generator"
-                 :version     "0.0.1"}
+                 :version     "0.1.2"}
 
    :global-opts []
 
