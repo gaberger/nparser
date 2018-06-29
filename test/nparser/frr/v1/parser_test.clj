@@ -1,8 +1,8 @@
 (ns nparser.frr.v1.parser-test
   (:require [clojure.test :refer :all]
             [com.rpl.specter :refer [ALL map-key select] :as sp]
-            [nparser.frr.parser :refer [create-frr-parser]]
-            [nparser.frr.spec :refer :all]
+            [nparser.parser :refer [create-parser]]
+            ; [nparser.frr.spec :refer :all]
             [nparser.frr.transforms.v1.core :refer [transformer]]
             [nparser.utils :as u]))
 
@@ -10,7 +10,7 @@
 (deftest test-parser
   (let [configuration (u/get-file "./configs/frr/router1-test.cfg")
         grammar (u/get-file "./parsers/frr/frr-new.ebnf")
-        parser (create-frr-parser grammar)
+        parser (create-parser grammar)
         t (transformer (parser configuration))]
 
     (testing "Parse test configuration"
@@ -27,7 +27,7 @@
 (deftest test-mutations
   (let [configuration (u/get-file "./configs/frr/router1-test.cfg")
         grammar (u/get-file "./parsers/frr/frr-new.ebnf")
-        parser (create-frr-parser grammar)
+        parser (create-parser grammar)
         t (transformer (parser configuration))
         modified (sp/transform [:<device> ALL :<interfaces> ALL :interface (map-key :ip_address)] #(if (= :ip_address %) :prefix) t)
         query (select [:<device> ALL :<interfaces> ALL] modified)]

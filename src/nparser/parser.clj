@@ -1,4 +1,4 @@
-(ns nparser.frr.parser
+(ns nparser.parser
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
             [clojure.pprint :refer [pprint]]
@@ -15,7 +15,7 @@
      comment = '!'"
     :auto-whitespace whitespace))
 
-(defn create-frr-parser [grammar]
+(defn create-parser [grammar]
   (parser
     grammar
     :output-format :hiccup

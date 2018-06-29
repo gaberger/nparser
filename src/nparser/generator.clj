@@ -1,6 +1,5 @@
-(ns nparser.frr.generator
+(ns nparser.generator
   (:require
-    [clojure.zip :as zip]
     [clojure.walk :refer [prewalk]]
     [taoensso.timbre :as timbre]
     [clojure.string :as str]))
