@@ -95,7 +95,7 @@
      ;                              (assoc {} :service (reduce conj {} arg)))
      :interfaces             (fn m [& args] (eavl :<interfaces> args))
      :vnc                    (fn m [& args] (eavl :vnc args))
-     :device                 (fn m [& args] (eavl :<device> args))}
+     :device                 (fn m [& args] (assoc {} :<device> (reduce conj {} args)))}
      ; :afiu                   (fn m [& args] (eavl :<afiu> args))}
      ; :identifier             (fn asn [arg]
      ;                           (assoc {} :identifier (clojure.edn/read-string arg)))}
