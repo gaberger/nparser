@@ -44,12 +44,12 @@
   (json/generate-string s {:pretty true}))
 
 (defn get-file [file]
-  (try 
-    (->> (clojure.java.io/as-file file) slurp)
-    (catch Exception e 
-      (do 
-        (println (.getMessage e))
-        (System/exit 1)))))
+  (debug "get-file " file)
+  ; (try 
+  (slurp file))
+    ; (catch Exception e 
+        ; (println (.getMessage e)))))
+        ; (System/exit 1)))))
 
 ; (defn edn->yaml [input]
 ;   (yaml/generate-string input))

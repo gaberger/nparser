@@ -3,9 +3,11 @@
             [nparser.generator :refer [container] :as g]
             [nparser.parser :refer :all]
             [nparser.utils :refer :all]
-            [nparser.frr.transforms.v1.core :refer [transformer]]
+            [nparser.frr.transforms.v2.core :refer [transformer]]
             [taoensso.timbre :as timbre]
+            [taoensso.timbre.appenders.core :as appenders]
             ; [yaml.core :as yaml]
+            [clojure.string :as str]
             [cheshire.core :as json]
             [environ.core :refer [env]]
             [clojure.pprint :refer [pprint]])
@@ -13,19 +15,18 @@
 
 (set! *warn-on-reflection* 1)
 
-;(timbre/refer-timbre)
-;(defonce logfile *ns*)
-;(timbre/merge-config! {:appenders {:println {:enabled? true}}})
-;(timbre/merge-config!
-;  {:appenders {:spit (appenders/spit-appender {:fname (str/join [logfile ".log"])})}})
+(timbre/refer-timbre)
+(timbre/merge-config! {:appenders {:println {:enabled? false}}})
+(timbre/merge-config!
+ {:appenders {:spit (appenders/spit-appender {:fname (str/join [*ns* ".log"])})}})
 
 
 (defn gen-config [arg]
+  (debug "gen-config " arg)
   (let [inputfile (:file arg)
         e (-> (get-file inputfile) (json/parse-string true))
-        c (g/generator e)
-        _ (println  c)]))
-    ; (print (str/join c))))
+        c (g/generator e)]
+    (print c)))
 
 ; (defn gen-yaml [arg]
 ;   (let [configuration (get-file (:file arg))
@@ -37,18 +38,17 @@
         ; (yaml/generate-string t)))
 
 (defn gen-json [arg]
-  (try 
-    (let [configuration (get-file (:file arg))
-          grammar (or (env :grammar-file) 
-                      (get-file (:grammar-file arg)))
+    (debug "gen-json " arg)
+    (let [configuration (slurp (:file arg))
+          grammar (slurp (:grammar arg))
           parser (create-parser grammar)
           t (transformer (parser configuration))
           z (json/generate-string t)]
-      (println (str z)))
-    (catch Exception e
-        (do
-          (println (.getMessage e))
-          (System/exit 1)))))
+      (println (str z))))
+    ; (catch Exception e
+    ;     (do
+    ;       (info "gen-json "(.getMessage e))
+    ;       (System/exit 1))))
 
 
 (def CONFIGURATION
