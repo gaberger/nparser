@@ -66,12 +66,12 @@
                  ;  :runs        gen-yaml}
                  {:command     "to-json"
                   :description "Generate JSON from a config"
-                  :opts        [{:option "file" :as "Config input file" :type :string}
-                                {:option "grammar" :as "Grammar file" :type :string}]
+                  :opts        [{:option "file" :as "Config input file" :type :string :default :present}
+                                {:option "grammar" :as "Grammar file" :type :string :default :present}]
                   :runs        gen-json}
                  {:command     "to-config"
                   :description "Generate config from an input file"
-                  :opts        [{:option "file" :as "JSON input file" :type :string}]
+                  :opts        [{:option "file" :as "JSON input file" :type :string :default :present}]
                   :runs        gen-config}]})
 
 
