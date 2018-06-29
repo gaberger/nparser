@@ -26,7 +26,8 @@
   (let [inputfile (:file arg)
         e (-> (get-file inputfile) (json/parse-string true))
         c (g/generator e)]
-    (print c)))
+    (debug "Generator output " c)    
+    (println c)))
 
 ; (defn gen-yaml [arg]
 ;   (let [configuration (get-file (:file arg))

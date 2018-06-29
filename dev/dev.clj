@@ -15,7 +15,7 @@
 
 (def configuration (get-file "./configs/frr/topo-evpn/frr.conf"))
 (def grammar (get-file "./parsers/frr/v2/frr.ebnf"))
-(def parser (create-frr-parser grammar))
+(def parser (create-parser grammar))
 (def t (nparser.frr.transforms.v2.core/transformer (parser configuration)))
 
       ; t (transformer (parser configuration))

@@ -1,6 +1,6 @@
 (*This is the EBNF Grammar for FRR router*)
 
-device = frrhead service? hostname? interfaces router-id  router vnc line
+device = frrhead hostname? service? interfaces router-id? router? vnc? line?
 
 (* frr *)
 (* ignoring unless see a reason why *)
