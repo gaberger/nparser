@@ -18,12 +18,12 @@ jobs:
           name: Prepare GRAALVM
           command: |
             echo Prepare GRAALVM
-            tar xvf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
-            ls -l
+            tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
+            pwd
       - save_cache:
           paths:
             - ~/dependencies/graalvm-ce-1.0.0-rc2
-          key: v1-dependencies-graalvm
+          key: v1-graal-vm-dependencies
   prepare_and_test:
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
@@ -56,7 +56,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
-            - v1-dependencies-graalvm
+            - v1-graal-vm-dependencies
       - run:
           name: Check dependencies
           command: ls -R ~
