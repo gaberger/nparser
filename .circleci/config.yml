@@ -20,6 +20,14 @@ jobs:
           command: |
             echo Prepare GRAALVM
             tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
+  prepare:
+    docker:
+      - image: circleci/clojure:tools-deps-1.9.0.375
+    working_directory: ~/repo
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
       - run:
           clojure -Spath
       - restore_cache:
@@ -31,14 +39,6 @@ jobs:
             - ~/.m2
             - ~/dependencies
           key: v1-dependencies-{{ checksum "deps.edn" }}
-  prepare:
-    docker:
-      - image: circleci/clojure:tools-deps-1.9.0.375
-    working_directory: ~/repo
-    environment:
-      JVM_OPTS: -Xmx3200m
-    steps:
-      - checkout
 
   test:
     docker:
