@@ -38,8 +38,11 @@ jobs:
             - ~/dependencies
           key: v1-dependencies-{{ checksum "deps.edn" }}
       - run:
-          clojure -Spath
-      - run: clojure -A:testv2
+          name: Grab deps
+          command: clojure -Spath
+      - run:
+          name: Test V2
+          command: clojure -A:testv2
   build_release:
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
@@ -54,6 +57,7 @@ jobs:
               - v1-dependencies-{{ checksum "deps.edn" }}
               - v1.0.0.-rc2-graalvm
         - run:
+          name: Build Native Image
           command: |
              clojure -A:native-image --graalvm-home ~/dependencies/graalvm-ce-1.0.0-rc2-linux-amd64
 
