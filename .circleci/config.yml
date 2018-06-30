@@ -54,7 +54,7 @@ jobs:
             keys:
               - v1-dependencies-{{ checksum "deps.edn" }}
               - v1.0.0.-rc2-graalvm
-        -run:
+        - run:
           command: |
              clojure -A:native-image --graalvm-home ~/dependencies/graalvm-ce-1.0.0-rc2-linux-amd64
 
