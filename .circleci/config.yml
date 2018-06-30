@@ -59,7 +59,7 @@ jobs:
             - v1-dependencies-graalvm
       - run:
           name: Check dependencies
-          command: ls -l /home/circleci/dependencies
+          command: ls -R ~
       - run:
           name: Build Native Image
           command: |
