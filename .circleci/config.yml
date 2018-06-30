@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  prepare:
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
     working_directory: ~/repo
@@ -12,9 +12,11 @@ jobs:
       JVM_OPTS: -Xmx3200m
     steps:
       - checkout
+  dependencies:
+    working_directory: ~/dependencies
+    steps:
       - run:
           name: Download GRAALVM
-          working_directory: ~
           command: |
             echo Download GRAALVM
             wget https://github.com/oracle/graal/releases/download/vm-1.0.0-rc2/graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz .
@@ -24,17 +26,27 @@ jobs:
           command: |
             echo Prepare GRAALVM
             tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
+      - run:
+          clj -Spath
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "deps.edn" }}
-          - v1.0.0.-rc2-graalvm
-      - run: clj -Spath
+            - v1-dependencies-{{ checksum "deps.edn" }}
+            - v1.0.0.-rc2-graalvm
       - save_cache:
           paths:
             - ~/.m2
+            - ~/dependencies
           key: v1-dependencies-{{ checksum "deps.edn" }}
-      - save_cache:
-          paths:
-            - ~/graalvm-ce-1.0.0-rc2
-          key: v1.0.0-rc2-graalvm
-      - run: clj -A:testv2, clj -A:uberjar, clj -A:native-image --graalvm-home ~/graalvm-ce-1.0.0-rc2
+
+  test:
+    working_directory: ~/repo
+    steps:
+      - run: clj -A:testv2
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - prepare
+      - dependencies
+      - test
