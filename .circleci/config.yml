@@ -13,9 +13,9 @@ jobs:
     steps:
       - checkout
       - run:
+          working_directory: ~
           command: |
             echo Download GRAALVM
-            working_directory ~
             wget https://github.com/oracle/graal/releases/download/vm-1.0.0-rc2/graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz .
             tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
       - restore_cache:
