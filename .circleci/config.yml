@@ -20,6 +20,10 @@ jobs:
           command: |
             echo Prepare GRAALVM
             tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
+      - save_cache:
+          paths:
+            - ~/dependencies/graalvm-ce-1.0.0-rc2-linux-amd64
+          key: v1-dependencies-graalvm
   prepare_and_test:
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
@@ -31,11 +35,9 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
-            - v1.0.0.-rc2-graalvm
       - save_cache:
           paths:
             - ~/.m2
-            - ~/dependencies
           key: v1-dependencies-{{ checksum "deps.edn" }}
       - run:
           name: Grab deps
@@ -54,7 +56,7 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
-            - v1.0.0.-rc2-graalvm
+            - v1-dependencies-graalvm
       - run:
           name: Build Native Image
           command: |
