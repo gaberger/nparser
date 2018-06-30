@@ -29,7 +29,7 @@ jobs:
             echo Prepare GRAALVM
             tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
       - run:
-          clj -Spath
+          clojure -Spath
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
@@ -45,7 +45,7 @@ jobs:
       - image: circleci/clojure:tools-deps-1.9.0.375
     working_directory: ~/repo
     steps:
-      - run: clj -A:testv2
+      - run: clojure -A:testv2
 
 workflows:
   version: 2
