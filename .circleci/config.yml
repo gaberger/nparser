@@ -50,13 +50,12 @@ jobs:
     environment:
       JVM_OPTS: -Xmx3200m
     steps:
-      steps:
-        - checkout
-        - restore_cache:
-            keys:
-              - v1-dependencies-{{ checksum "deps.edn" }}
-              - v1.0.0.-rc2-graalvm
-        - run:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "deps.edn" }}
+            - v1.0.0.-rc2-graalvm
+      - run:
           name: Build Native Image
           command: |
              clojure -A:native-image --graalvm-home ~/dependencies/graalvm-ce-1.0.0-rc2-linux-amd64
