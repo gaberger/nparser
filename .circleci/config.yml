@@ -20,7 +20,7 @@ jobs:
           command: |
             echo Prepare GRAALVM
             tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
-  prepare:
+  prepare_and_test:
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
     working_directory: ~/repo
@@ -28,8 +28,7 @@ jobs:
       JVM_OPTS: -Xmx3200m
     steps:
       - checkout
-      - run:
-          clojure -Spath
+
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
@@ -39,23 +38,35 @@ jobs:
             - ~/.m2
             - ~/dependencies
           key: v1-dependencies-{{ checksum "deps.edn" }}
-
-  test:
+      - run:
+          clojure -Spath
+      - run: clojure -A:testv2
+  build_release:
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
     working_directory: ~/repo
+    environment:
+      JVM_OPTS: -Xmx3200m
     steps:
-      - run: clojure -A:testv2
+      steps:
+        - checkout
+        - restore_cache:
+            keys:
+              - v1-dependencies-{{ checksum "deps.edn" }}
+              - v1.0.0.-rc2-graalvm
+        -run:
+          command: |
+             clojure -A:native-image --graalvm-home ~/dependencies/graalvm-ce-1.0.0-rc2-linux-amd64
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - dependencies
-      - prepare:
+      - prepare_and_test:
           requires:
             - dependencies
-      - test:
+      - build_release:
           requires:
-            - prepare
+            - prepare_and_test
             - dependencies
