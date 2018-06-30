@@ -16,13 +16,12 @@ jobs:
             curl -LO https://github.com/oracle/graal/releases/download/vm-1.0.0-rc2/graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
       - run:
           name: Prepare GRAALVM
-          working_directory: ~
           command: |
             echo Prepare GRAALVM
-            tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
+            tar xvf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
       - save_cache:
           paths:
-            - ~/dependencies/graalvm-ce-1.0.0-rc2-linux-amd64
+            - ~/dependencies/graalvm-ce-1.0.0-rc2
           key: v1-dependencies-graalvm
   prepare_and_test:
     docker:
