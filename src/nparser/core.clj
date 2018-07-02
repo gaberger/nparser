@@ -23,9 +23,7 @@
 
 (defn gen-config [arg]
   (debug "gen-config " arg)
-  (let [input (if (contains? arg :stdin) 
-                  (-> (:stdin arg) (json/parse-string true)) 
-                  (-> (get-file (:file arg) (json/parse-string true))))
+  (let [input (if (contains? arg :stdin) (:stdin arg) (-> (get-file (:file arg) (json/parse-string true))))
         c (g/generator input)]
     (debug "Generator output " c)    
     (println c)))
