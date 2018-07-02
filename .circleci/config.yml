@@ -42,13 +42,13 @@ jobs:
             echo Prepare GRAALVM
             tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
       - save_cache:
+          key: v4-graal-vm-dependencies
           paths:
             - ~/graalvm-ce-1.0.0-rc2
-          key: v3-graal-vm-dependencies
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
-            - v3-graal-vm-dependencies
+            - v4-graal-vm-dependencies
       - run:
           name: Update PATH for GRAALVM
           command: |
