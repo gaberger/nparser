@@ -10,8 +10,7 @@
             [clojure.string :as str]
             [cheshire.core :as json]
             [environ.core :refer [env]]
-            [clojure.pprint :refer [pprint]]
-            [spyscope.core :refer :all :exclude [trace]])
+            [clojure.pprint :refer [pprint]])
   (:gen-class))
 
 (set! *warn-on-reflection* 1)
@@ -98,6 +97,5 @@
     (if (.ready bf)
         (let [conf (slurp *in*)
               vargs (into [] args)]
-          (run-cmd #spy/p (conj vargs "--stdin" conf) STDIN_INPUT)
-          (run-cmd #spy/p args STDIN_INPUT))
+          (run-cmd (conj vargs "--stdin" conf) STDIN_INPUT))
         (run-cmd args FILE_INPUT))))
