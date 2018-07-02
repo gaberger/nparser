@@ -56,6 +56,7 @@ jobs:
       - run:
           name: Update PATH for GRAALVM
           command: |
+            ls -l /home/circleci/dependencies/graalvm-ce-1.0.0-rc2
             echo 'export PATH=/home/circleci/dependencies/graalvm-ce-1.0.0-rc2/bin:$PATH' >> $BASH_ENV
             source $BASH_ENV
       - restore_cache:
