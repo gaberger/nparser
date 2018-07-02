@@ -8,8 +8,7 @@ jobs:
     environment:
       JVM_OPTS: -Xmx3200m
     docker:
-      - image: circleci/clojure:tools-deps-1.9.0.381
-    steps:
+      - image: clojure/tools-deps-1.9.0.381
       - checkout
       - run:
           name: Grab deps
@@ -26,7 +25,7 @@ jobs:
           command: clojure -A:testv2
   build_release:
     docker:
-      - image: circleci/clojure:tools-deps-1.9.0.381
+      - image: clojure/tools-deps-1.9.0.381
     environment:
       JVM_OPTS: -Xmx3200m
     steps:
