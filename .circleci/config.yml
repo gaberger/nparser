@@ -22,8 +22,8 @@ jobs:
             pwd
       - save_cache:
           paths:
-            - ~/dependencies/graalvm-ce-1.0.0-rc2
-          key: v1-graal-vm-dependencies
+            - graalvm-ce-1.0.0-rc2
+          key: v2-graal-vm-dependencies
   prepare_and_test:
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
@@ -53,10 +53,15 @@ jobs:
       JVM_OPTS: -Xmx3200m
     steps:
       - checkout
+      - run:
+          name: Update PATH for GRAALVM
+          command: |
+            echo 'export PATH=/home/circleci/dependencies/graalvm-ce-1.0.0-rc2/bin:$PATH' >> $BASH_ENV
+            source $BASH_ENV
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
-            - v1-graal-vm-dependencies
+            - v2-graal-vm-dependencies
       - run:
           name: Check dependencies
           command: ls -R ~
