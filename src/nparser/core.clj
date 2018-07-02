@@ -83,13 +83,13 @@
 
    :commands    [
                  {:command     "to-json"
-                  :description "###Generate JSON from a config"
+                  :description "Generate JSON from a config"
                   :opts        [{:option "stdin" :as "Config input file" :type :string :default :present}
                                 {:option "grammar" :as "Grammar file" :type :string :default :present}]
                   :runs        gen-json}
                  {:command     "to-config"
                   :description "Generate config from an input file"
-                  :opts        [{:option "file" :as "JSON input file" :type :string :default :present}]
+                  :opts        [{:option "stdin" :as "JSON input file" :type :string :default :present}]
                   :runs        gen-config}]})
 
 (defn -main [& args]
