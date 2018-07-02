@@ -10,7 +10,8 @@
             [clojure.string :as str]
             [cheshire.core :as json]
             [environ.core :refer [env]]
-            [clojure.pprint :refer [pprint]])
+            [clojure.pprint :refer [pprint]]
+            [spyscope.core :refer :all :exclude [trace]])
   (:gen-class))
 
 (set! *warn-on-reflection* 1)
@@ -23,9 +24,8 @@
 
 (defn gen-config [arg]
   (debug "gen-config " arg)
-  (let [inputfile (:file arg)
-        e (-> (get-file inputfile) (json/parse-string true))
-        c (g/generator e)]
+  (let [input (if (contains? arg :stdin) (:stdin arg) (-> (get-file (:file arg) (json/parse-string true))))
+        c (g/generator input)]
     (debug "Generator output " c)    
     (println c)))
 
@@ -40,10 +40,10 @@
 
 (defn gen-json [arg]
     (debug "gen-json " arg)
-    (let [configuration (slurp (:file arg))
+    (let [input  (if (contains? arg :stdin) (:stdin arg) (-> (get-file (:file arg) (json/parse-string true))))
           grammar (slurp (:grammar arg))
           parser (create-parser grammar)
-          t (transformer (parser configuration))
+          t (transformer (parser input))
           z (json/generate-string t)]
       (println (str z))))
     ; (catch Exception e
@@ -52,7 +52,7 @@
     ;       (System/exit 1))))
 
 
-(def CONFIGURATION
+(def FILE_INPUT
   {:app         {:command     "nparser"
                  :description "A command-line configuration generator"
                  :version     "0.1.2"}
@@ -75,5 +75,29 @@
                   :runs        gen-config}]})
 
 
+(def STDIN_INPUT
+  {:app         {:command     "nparser"
+                 :description "A command-line configuration generator"
+                 :version     "0.1.2"}
+
+   :global-opts []
+
+   :commands    [
+                 {:command     "to-json"
+                  :description "###Generate JSON from a config"
+                  :opts        [{:option "stdin" :as "Config input file" :type :string :default :present}
+                                {:option "grammar" :as "Grammar file" :type :string :default :present}]
+                  :runs        gen-json}
+                 {:command     "to-config"
+                  :description "Generate config from an input file"
+                  :opts        [{:option "file" :as "JSON input file" :type :string :default :present}]
+                  :runs        gen-config}]})
+
 (defn -main [& args]
-  (run-cmd args CONFIGURATION))
+  (let [bf (java.io.BufferedReader. *in*)]
+    (if (.ready bf)
+        (let [conf (slurp *in*)
+              vargs (into [] args)]
+          (run-cmd #spy/p (conj vargs "--stdin" conf) STDIN_INPUT)
+          (run-cmd #spy/p args STDIN_INPUT))
+        (run-cmd args FILE_INPUT))))
