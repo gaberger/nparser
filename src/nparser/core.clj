@@ -54,7 +54,7 @@
 (def FILE_INPUT
   {:app         {:command     "nparser"
                  :description "A command-line configuration generator"
-                 :version     "0.1.2"}
+                 :version     "0.1.3-alpha"}
 
    :global-opts []
 
