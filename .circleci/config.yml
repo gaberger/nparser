@@ -5,10 +5,32 @@
 version: 2
 jobs:
   dependencies:
-    working_directory: /home/circleci/dependencies
+    environment:
+      JVM_OPTS: -Xmx3200m
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
     steps:
+      - checkout
+      - run:
+          name: Grab deps
+          command: clojure -Spath
+      - save_cache:
+          paths:
+            - ~/.m2
+          key: v1-dependencies-{{ checksum "deps.edn" }}
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "deps.edn" }}
+      - run:
+          name: Test V2
+          command: clojure -A:testv2
+  build_release:
+    docker:
+      - image: circleci/clojure:tools-deps-1.9.0.375
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
       - run:
           name: Download GRAALVM
           command: |
@@ -19,67 +41,30 @@ jobs:
           command: |
             echo Prepare GRAALVM
             tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
-            pwd
       - save_cache:
           paths:
-            - /home/circleci/dependencies/graalvm-ce-1.0.0-rc2
+            - ~/graalvm-ce-1.0.0-rc2
           key: v3-graal-vm-dependencies
-  prepare_and_test:
-    docker:
-      - image: circleci/clojure:tools-deps-1.9.0.375
-    working_directory: ~/repo
-    environment:
-      JVM_OPTS: -Xmx3200m
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "deps.edn" }}
-      - save_cache:
-          paths:
-            - ~/.m2
-          key: v1-dependencies-{{ checksum "deps.edn" }}
-      - run:
-          name: Grab deps
-          command: clojure -Spath
-      - run:
-          name: Test V2
-          command: clojure -A:testv2
-  build_release:
-    docker:
-      - image: circleci/clojure:tools-deps-1.9.0.375
-    working_directory: ~/repo
-    environment:
-      JVM_OPTS: -Xmx3200m
-    steps:
-      - checkout
       - run:
           name: Update PATH for GRAALVM
           command: |
-            ls -l /home/circleci/dependencies/graalvm-ce-1.0.0-rc2
-            echo 'export PATH=/home/circleci/dependencies/graalvm-ce-1.0.0-rc2/bin:$PATH' >> $BASH_ENV
+            ls -l ~/graalvm-ce-1.0.0-rc2
+            echo 'export PATH=~/graalvm-ce-1.0.0-rc2/bin:$PATH' >> $BASH_ENV
             source $BASH_ENV
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
             - v3-graal-vm-dependencies
       - run:
-          name: Check dependencies
-          command: ls -R ~
-      - run:
           name: Build Native Image
           command: |
-             clojure -A:native-image --graalvm-home /home/circleci/dependencies/graalvm-ce-1.0.0-rc2
+             clojure -A:native-image --graalvm-home ~/graalvm-ce-1.0.0-rc2
 
 workflows:
   version: 2
   build_and_test:
     jobs:
       - dependencies
-      - prepare_and_test:
-          requires:
-            - dependencies
       - build_release:
           requires:
-            - prepare_and_test
             - dependencies

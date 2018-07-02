@@ -13,7 +13,7 @@
            ;http-kit                    {:mvn/version "2.3.0"}
            ;io.forward/yaml             {:mvn/version "1.0.8"}
            cli-matic                   {:mvn/version "0.1.11"}}
- :paths   ["src"]
+ :paths   ["src" "resources"]
 
  :aliases {
            :dev    {:extra-deps {spyscope {:mvn/version "0.1.6"}}}
