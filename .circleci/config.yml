@@ -52,7 +52,7 @@ jobs:
       - run:
           name: Update PATH for GRAALVM
           command: |
-            echo 'export PATH=~/graalvm-ce-1.0.0-rc2/bin:$PATH' >> $BASH_ENV
+            echo 'export PATH=~/project/graalvm-ce-1.0.0-rc2/bin:$PATH' >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: Build Native Image
