@@ -9,6 +9,7 @@ jobs:
       JVM_OPTS: -Xmx3200m
     docker:
       - image: clojure/tools-deps-1.9.0.381
+    steps:
       - checkout
       - run:
           name: Grab deps
