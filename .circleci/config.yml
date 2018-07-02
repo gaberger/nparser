@@ -5,7 +5,7 @@
 version: 2
 jobs:
   dependencies:
-    working_directory: ~/dependencies
+    working_directory: /home/circleci/dependencies
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
     steps:
@@ -22,8 +22,8 @@ jobs:
             pwd
       - save_cache:
           paths:
-            - graalvm-ce-1.0.0-rc2
-          key: v2-graal-vm-dependencies
+            - /home/circleci/dependencies/graalvm-ce-1.0.0-rc2
+          key: v3-graal-vm-dependencies
   prepare_and_test:
     docker:
       - image: circleci/clojure:tools-deps-1.9.0.375
@@ -61,14 +61,14 @@ jobs:
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
-            - v2-graal-vm-dependencies
+            - v3-graal-vm-dependencies
       - run:
           name: Check dependencies
           command: ls -R ~
       - run:
           name: Build Native Image
           command: |
-             clojure -A:native-image --graalvm-home ~/dependencies/graalvm-ce-1.0.0-rc2
+             clojure -A:native-image --graalvm-home /home/circleci/dependencies/graalvm-ce-1.0.0-rc2
 
 workflows:
   version: 2
