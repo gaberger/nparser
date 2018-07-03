@@ -20,7 +20,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.m2
-          key: v1-dependencies-{{ checksum "deps.edn" }}
+          key: v2-dependencies-{{ checksum "deps.edn" }}
   build_release:
     docker:
       - image: gaberger/jdk9-graalvm:clojure-1.9
@@ -30,7 +30,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "deps.edn" }}
+            - v2-dependencies-{{ checksum "deps.edn" }}
       - run:
           name: Update PATH for GRAALVM
           command: |
