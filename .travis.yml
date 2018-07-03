@@ -1,0 +1,22 @@
+dist: trusty
+
+language: java
+jdk:
+  - openjdk10
+
+sudo: required
+
+before_install:
+  - sudo apt-get update
+  - sudo apt-get install -y g++ rlwrap libz-dev
+
+jobs:
+  include:
+    - stage: dependencies
+      script: ./build.sh
+    - stage: test
+      script: clj -A:testv2
+    - stage: uberjar
+      script: clj -A:uberjar
+    - stage: native-image
+      script: clj -A:native-image --graalvm-home ~/runtime/graalvm-ce-1.0.0-rc2
