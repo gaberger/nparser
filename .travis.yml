@@ -9,11 +9,12 @@ sudo: required
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y g++ rlwrap libz-dev
+  - sh -x ./build.sh
 
 jobs:
   include:
-    - stage: build
-      script: sh -x ./build.sh
+    - stage: test
       script: clj -A:testv2
+    - stage: build
       script: clj -A:uberjar
       script: clj -A:native-image --graalvm-home ~/runtime/graalvm-ce-1.0.0-rc2
