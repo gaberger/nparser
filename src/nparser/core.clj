@@ -21,7 +21,9 @@
  {:appenders {:spit (appenders/spit-appender {:fname (str/join [*ns* ".log"])})}})
 
 
-(defn gen-config [arg]
+(defn gen-config 
+  "Takes a JSON encoded data structure and generate a configuration"
+  [arg]
   (debug "gen-config " arg)
   (let [input (if (contains? arg :stdin) 
                   (-> (:stdin arg) (json/parse-string true))
@@ -39,9 +41,11 @@
 ;       (println (str z))))
         ; (yaml/generate-string t)))
 
-(defn gen-json [arg]
+(defn gen-json
+"Takes a router configuration and parses it into JSON"
+ [arg]
     (debug "gen-json " arg)
-    (let [input  (if (contains? arg :stdin) (:stdin arg) (-> (get-file (:file arg) (json/parse-string true))))
+    (let [input  (if (contains? arg :stdin) (:stdin arg) (get-file (:file arg)))
           grammar (slurp (:grammar arg))
           parser (create-parser grammar)
           t (transformer (parser input))

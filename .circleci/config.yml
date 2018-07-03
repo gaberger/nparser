@@ -57,7 +57,42 @@ jobs:
       - run:
           name: Build Native Image
           command: |
-             clojure -A:native-image --graalvm-home ~/graalvm-ce-1.0.0-rc2
+             clojure -A:native-image --graalvm-home ~/graalvm-ce-1.0.0-rc2  build_release:
+  build_uberjar: 
+    docker:
+      - image: clojure:tools-deps-1.9.0.381
+    environment:
+      JVM_OPTS: -Xmx3200m
+    steps:
+      - checkout
+      - run:
+          name: Download GRAALVM
+          command: |
+            echo Download GRAALVM
+            curl -LO https://github.com/oracle/graal/releases/download/vm-1.0.0-rc2/graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
+      - run:
+          name: Prepare GRAALVM
+          command: |
+            echo Prepare GRAALVM
+            tar xf graalvm-ce-1.0.0-rc2-linux-amd64.tar.gz
+      - save_cache:
+          key: v4-graal-vm-dependencies
+          paths:
+            - ~/graalvm-ce-1.0.0-rc2
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "deps.edn" }}
+            - v4-graal-vm-dependencies
+      - run:
+          name: Update PATH for GRAALVM
+          command: |
+            echo 'export PATH=~/project/graalvm-ce-1.0.0-rc2/bin:$PATH' >> $BASH_ENV
+            echo 'export JAVA_HOME=~/project/graalvm-ce-1.0.0-rc2' >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Build Uberjar
+          command: |
+             clojure -A:uberjar
 
 workflows:
   version: 2
@@ -65,5 +100,8 @@ workflows:
     jobs:
       - dependencies
       - build_release:
+          requires:
+            - dependencies  
+      - build_uberjar:
           requires:
             - dependencies
