@@ -34,13 +34,13 @@ jobs:
       - run:
           name: Update PATH for GRAALVM
           command: |
-            echo 'export PATH=~/project/graalvm-ce-1.0.0-rc2/bin:$PATH' >> $BASH_ENV
+            echo 'export PATH=~/runtime/graalvm-ce-1.0.0-rc2/bin:$PATH' >> $BASH_ENV
             echo 'export JAVA_HOME=~/project/graalvm-ce-1.0.0-rc2' >> $BASH_ENV
             source $BASH_ENV
       - run:
           name: Build Native Image
           command: |
-             clojure -A:native-image --graalvm-home ~/runtime/graalvm-ce-1.0.0/graalvm-ce-1.0.0-rc2  
+             clojure -A:native-image --graalvm-home ~/runtime/graalvm-ce-1.0.0-rc2  
       - run:
           name: Build Uberjar
           command: |
