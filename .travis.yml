@@ -13,7 +13,7 @@ before_install:
 jobs:
   include:
     - stage: dependencies
-      script: ./build.sh
+      script: sh -x ./build.sh
     - stage: test
       script: clj -A:testv2
     - stage: uberjar
