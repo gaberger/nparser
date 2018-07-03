@@ -28,7 +28,6 @@ jobs:
       JVM_OPTS: -Xmx3200m
     steps:
       - checkout
-            - ~/graalvm-ce-1.0.0-rc2
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "deps.edn" }}
