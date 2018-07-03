@@ -12,11 +12,8 @@ before_install:
 
 jobs:
   include:
-    - stage: dependencies
+    - stage: build
       script: sh -x ./build.sh
-    - stage: test
       script: clj -A:testv2
-    - stage: uberjar
       script: clj -A:uberjar
-    - stage: native-image
       script: clj -A:native-image --graalvm-home ~/runtime/graalvm-ce-1.0.0-rc2
