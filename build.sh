@@ -2,7 +2,7 @@
 
 #Download Clojure
 
-curl -LO wget https://download.clojure.org/install/linux-install-1.9.0.381.sh
+curl -LO  https://download.clojure.org/install/linux-install-1.9.0.381.sh
 chmod u+x linux-install-1.9.0.381.sh
 ./linux-install-1.9.0.381.sh
 
