@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
-#Download Clojure
+#Download and Install Clojure
 
 curl -LO  https://download.clojure.org/install/linux-install-1.9.0.381.sh
 chmod u+x linux-install-1.9.0.381.sh
-./linux-install-1.9.0.381.sh
+sudo ./linux-install-1.9.0.381.sh
 
 
 # Download GRAALVM
